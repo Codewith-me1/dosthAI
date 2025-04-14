@@ -58,7 +58,6 @@ export default function UserDetails({ onBack, onSubmit }: UserDetailsProps) {
         return (
             <KidsProfile
                 onBack={() => setCurrentStep('details')}
-                onSubmit={handleKidsProfileSubmit}
             />
         );
     }

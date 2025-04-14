@@ -186,7 +186,6 @@ export default function Login() {
         return (
             <KidsProfile
                 onBack={() => setCurrentStep('details')}
-                onSubmit={handleKidsProfileSubmit}
             />
         );
     }
@@ -198,7 +197,7 @@ export default function Login() {
 
             <div className='flex justify-center mt-10 md:hidden '>
             <div className='login-image'>
-                <Image src="/login.png" alt="Login Image" width={40} height={40} />
+                <Image src="/logo.png" alt="Logo" width={120} height={40} />
             </div>
             </div>
             <div className="w-full md:w-1/2 bg-white p-1  flex flex-col justify-between min-h-screen relative hidden md:flex">
@@ -339,11 +338,11 @@ export default function Login() {
         {/* Social Login Options */}
         <div className="mt-8 space-y-4">
             <button className="w-full text-black font-medium flex items-center justify-center gap-4 px-5 py-4 border border-gray-300 rounded-3xl hover:bg-gray-50 transition-all duration-200 hover:scale-[0.98] hover:shadow-sm active:scale-[0.97] active:shadow-inner">
-                <Image src="icons/google.svg" alt="Google" width={24} height={24} />
+                <Image src="/icons/google.svg" alt="Google" width={24} height={24} />
                 <span>Sign in with Google</span>
             </button>
             <button className="w-full flex items-center text-black font-medium justify-center gap-4 px-5 py-4 border border-gray-300 rounded-3xl hover:bg-gray-50 transition-all duration-200 hover:scale-[0.98] hover:shadow-sm active:scale-[0.97] active:shadow-inner">
-                <Image src="icons/apple.svg" alt="Apple" width={24} height={24} />
+                <Image src="/icons/apple.svg" alt="Apple" width={24} height={24} />
                 <span>Sign in with Apple</span>
             </button>
         </div>
