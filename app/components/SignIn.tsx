@@ -106,8 +106,8 @@ export default function SignIn() {
                 </div>
 
                 {/* Main Image */}
-                <div className="w-full max-w-xl mx-auto relative overflow-hidden">
-                    <div className="-rotate-z-10 mt-10">
+                <div className="w-[70%] max-w-xl mx-auto relative ">
+                    <div className="-rotate-z-10">
                         <Image
                             src="/catimage.png"
                             alt="Cool Cat"
@@ -121,9 +121,9 @@ export default function SignIn() {
             </div>
 
             {/* Right Section */}
-            <div className="w-full md:w-1/2 bg-gray-50 p-10 flex items-center justify-center">
+            <div className="w-full md:w-1/2 md:p-10 bg-gray-50 p-10 flex items-center justify-center">
                 <div className="w-full max-w-lg">
-                    <h2 className="text-4xl font-bold text-[#3A3A3A] text-center mb-10">Welcome Back!</h2>
+                    <h2 className="text-4xl  font-bold text-[#3A3A3A] text-center mb-10">Welcome Back!</h2>
                     
                     <form onSubmit={handleSignInSubmit} className="space-y-6">
                         {/* Email Input */}

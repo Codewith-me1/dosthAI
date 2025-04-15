@@ -19,7 +19,7 @@ interface CompleteRegistrationData {
     kidsProfile?: KidsProfileData;
 }
 
-export default function Login() {
+export default function SignUp() {
     // Step state
     const [currentStep, setCurrentStep] = useState<Step>('signup');
     
@@ -222,8 +222,8 @@ export default function Login() {
                 </div>
 
                 {/* Main Image - Positioned at bottom */}
-                <div className="w-full max-w-xl mx-auto relative overflow-hidden">
-  <div className=" -rotate-z-10 mt-10">
+                <div className="w-[70%] max-w-xl mx-auto relative ">
+  <div className=" -rotate-z-10 ">
     <Image
       src="/catimage.png"
       alt="Cool Cat"
@@ -329,7 +329,7 @@ export default function Login() {
         {/* Sign In Link */}
         <p className="text-center text-[#3A3A3A] mt-8 text-lg">
             Already have an account?{" "}
-            <Link href="/signin" className="text-[#2E74FF] font-medium">
+            <Link href="/pages/signin" className="text-[#2E74FF] font-medium">
                 Sign In
             </Link>
         </p>
