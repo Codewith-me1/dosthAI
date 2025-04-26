@@ -1,9 +1,13 @@
 "use client";
 
 import React, { useState } from 'react';
+import { useEffect } from 'react';
 import Image from 'next/image';
 import { TabsList, Tabs, TabsContent, TabsTrigger } from '../ui/tabs';
-import { Search } from 'lucide-react';
+import { Eye, Heart, Search, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import CreateCharacterModal from './CreateCharacterModal';
+import Card from './Card';
 
 interface CarouselItem {
   id: number;
@@ -23,87 +27,173 @@ const samplePrompts = [
 ];
 
 const dummyCarousels: CarouselItem[] = [
-  // Stories
+  // Stories - Most Popular
   {
     id: 1,
-    title: "The Magic Garden Adventure",
+    title: "How to walk my dog lorem ipsum dolor amet?",
     image: "/dummyimage.jpg",
     rating: 4.8,
     category: "Most Popular"
   },
   {
     id: 2,
-    title: "A Day at the Zoo",
+    title: "How to walk my dog lorem ipsum dolor amet?",
     image: "/dummyimage.jpg",
     rating: 4.6,
     category: "Most Popular"
   },
   {
     id: 3,
-    title: "The Friendly Dragon",
+    title: "How to walk my dog lorem ipsum dolor amet?",
+    image: "/dummyimage.jpg",
+    rating: 4.7,
+    category: "Most Popular"
+  },
+  {
+    id: 4,
+    title: "How to walk my dog lorem ipsum dolor amet?",
+    image: "/dummyimage.jpg",
+    rating: 4.5,
+    category: "Most Popular"
+  },
+  {
+    id: 5,
+    title: "How to walk my dog lorem ipsum dolor amet?",
+    image: "/dummyimage.jpg",
+    rating: 4.9,
+    category: "Most Popular"
+  },
+  {
+    id: 6,
+    title: "How to walk my dog lorem ipsum dolor amet?",
+    image: "/dummyimage.jpg",
+    rating: 4.7,
+    category: "Most Popular"
+  },
+  // Story Books
+  {
+    id: 7,
+    title: "How to walk my dog lorem ipsum dolor amet?",
+    image: "/dummyimage.jpg",
+    rating: 4.8,
+    category: "Story Books"
+  },
+  {
+    id: 8,
+    title: "How to walk my dog lorem ipsum dolor amet?",
+    image: "/dummyimage.jpg",
+    rating: 4.6,
+    category: "Story Books"
+  },
+  {
+    id: 9,
+    title: "How to walk my dog lorem ipsum dolor amet?",
     image: "/dummyimage.jpg",
     rating: 4.7,
     category: "Story Books"
   },
   {
-    id: 4,
-    title: "Space Adventures",
+    id: 10,
+    title: "How to walk my dog lorem ipsum dolor amet?",
     image: "/dummyimage.jpg",
     rating: 4.5,
     category: "Story Books"
   },
   {
-    id: 5,
-    title: "Making New Friends",
+    id: 11,
+    title: "How to walk my dog lorem ipsum dolor amet?",
+    image: "/dummyimage.jpg",
+    rating: 4.9,
+    category: "Story Books"
+  },
+  {
+    id: 12,
+    title: "How to walk my dog lorem ipsum dolor amet?",
+    image: "/dummyimage.jpg",
+    rating: 4.7,
+    category: "Story Books"
+  },
+  // Social Skills
+  {
+    id: 13,
+    title: "How to walk my dog lorem ipsum dolor amet?",
+    image: "/dummyimage.jpg",
+    rating: 4.8,
+    category: "Social Skills"
+  },
+  {
+    id: 14,
+    title: "How to walk my dog lorem ipsum dolor amet?",
+    image: "/dummyimage.jpg",
+    rating: 4.6,
+    category: "Social Skills"
+  },
+  {
+    id: 15,
+    title: "How to walk my dog lorem ipsum dolor amet?",
+    image: "/dummyimage.jpg",
+    rating: 4.7,
+    category: "Social Skills"
+  },
+  {
+    id: 16,
+    title: "How to walk my dog lorem ipsum dolor amet?",
+    image: "/dummyimage.jpg",
+    rating: 4.5,
+    category: "Social Skills"
+  },
+  {
+    id: 17,
+    title: "How to walk my dog lorem ipsum dolor amet?",
     image: "/dummyimage.jpg",
     rating: 4.9,
     category: "Social Skills"
   },
   {
-    id: 6,
-    title: "Sharing is Caring",
+    id: 18,
+    title: "How to walk my dog lorem ipsum dolor amet?",
     image: "/dummyimage.jpg",
     rating: 4.7,
     category: "Social Skills"
   },
   // Activities
   {
-    id: 7,
+    id: 19,
     title: "Paint with Your Hands",
     image: "/dummyimage.jpg",
     rating: 4.8,
     category: "Popular Activities"
   },
   {
-    id: 8,
+    id: 20,
     title: "Build a Mini Garden",
     image: "/dummyimage.jpg",
     rating: 4.6,
     category: "Popular Activities"
   },
   {
-    id: 9,
+    id: 21,
     title: "Count the Stars",
     image: "/dummyimage.jpg",
     rating: 4.7,
     category: "Educational"
   },
   {
-    id: 10,
+    id: 22,
     title: "Learn the Alphabet",
     image: "/dummyimage.jpg",
     rating: 4.9,
     category: "Educational"
   },
   {
-    id: 11,
+    id: 23,
     title: "Make Paper Animals",
     image: "/dummyimage.jpg",
     rating: 4.5,
     category: "Creative"
   },
   {
-    id: 12,
+    id: 24,
     title: "Draw Your Family",
     image: "/dummyimage.jpg",
     rating: 4.6,
@@ -111,47 +201,50 @@ const dummyCarousels: CarouselItem[] = [
   },
   // Cards
   {
-    id: 13,
+    id: 25,
     title: "Animal Kingdom Cards",
     image: "/dummyimage.jpg",
     rating: 4.8,
     category: "Popular Cards"
   },
   {
-    id: 14,
+    id: 26,
     title: "Color Match Cards",
     image: "/dummyimage.jpg",
     rating: 4.7,
     category: "Popular Cards"
   },
   {
-    id: 15,
+    id: 27,
     title: "Math Fun Cards",
     image: "/dummyimage.jpg",
     rating: 4.6,
     category: "Learning Cards"
   },
   {
-    id: 16,
+    id: 28,
     title: "Word Building Cards",
     image: "/dummyimage.jpg",
     rating: 4.9,
     category: "Learning Cards"
   },
   {
-    id: 17,
+    id: 29,
     title: "Memory Game Cards",
     image: "/dummyimage.jpg",
     rating: 4.7,
     category: "Fun Cards"
   },
   {
-    id: 18,
+    id: 30,
     title: "Action Cards",
     image: "/dummyimage.jpg",
     rating: 4.5,
     category: "Fun Cards"
-  }
+  },
+
+
+  
 ];
 
 const categories = {
@@ -161,59 +254,91 @@ const categories = {
 };
 
 const CarouselBoard: React.FC = () => {
+
+  const words = ['activity', 'cards', 'story']; // You can add more words here
+const [index, setIndex] = useState(0);
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    setIndex(prev => (prev + 1) % words.length);
+  }, 2000); // Change word every 2 seconds
+
+  return () => clearInterval(interval);
+}, []);
+
   const [activeCategory, setActiveCategory] = useState("stories");
+  const [selectedOption, setSelectedOption] = useState("story");
+  const [isCharacterModalOpen, setIsCharacterModalOpen] = useState(false);
 
   const filterCarouselsByCategory = (category: string) => {
     return dummyCarousels.filter(item => item.category === category);
   };
 
+  const scrollCarousel = (elementId: string, direction: 'left' | 'right') => {
+    const container = document.getElementById(elementId);
+    if (container) {
+      const scrollAmount = direction === 'left' ? -300 : 300; // Card width + gap
+      container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
   const renderCarouselGrid = (category: string) => {
     const items = filterCarouselsByCategory(category);
+    const carouselId = `carousel-${category.replace(/\s+/g, '-').toLowerCase()}`;
+    
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-        {items.map((item) => (
-          <div key={item.id} className="rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer bg-white">
-            <div className="relative h-32">
-              <Image
-                src={item.image}
-                alt={item.title}
-                fill
-                className="object-cover"
+      <div className="relative group">
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 z-10">
+          <button 
+            onClick={() => scrollCarousel(carouselId, 'left')}
+            className="bg-white rounded-full p-2 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 -ml-4 hover:bg-gray-50"
+          >
+            <ChevronLeft className="h-6 w-6 text-gray-600" />
+          </button>
+        </div>
+        
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 z-10">
+          <button 
+            onClick={() => scrollCarousel(carouselId, 'right')}
+            className="bg-white rounded-full p-2 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 -mr-4 hover:bg-gray-50"
+          >
+            <ChevronRight className="h-6 w-6 text-gray-600" />
+          </button>
+        </div>
+
+        <div className="overflow-hidden">
+          <div 
+            id={carouselId}
+            className="flex gap-4 overflow-x-auto scrollbar-hide flex-nowrap scroll-smooth"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {items.map((item) => (
+              <Card
+                key={String(item.id)}
+                id={String(item.id)}
+                title={item.title}
+                image={item.image}
+                rating={item.rating}
+                category={item.category}
+                type={activeCategory === 'stories' ? 'story' : 'activity'}
               />
-            </div>
-            <div className="p-3">
-              <h3 className="text-sm font-medium mb-2 line-clamp-2">{item.title}</h3>
-              <div className="flex items-center">
-                {[...Array(5)].map((_, index) => (
-                  <svg
-                    key={index}
-                    className={`w-3 h-3 ${
-                      index < item.rating ? "text-yellow-400" : "text-gray-200"
-                    }`}
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
-              </div>
-            </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
     );
   };
 
   const renderAllContent = () => {
     return (
-      <div className="space-y-16">
+      <div className="space-y-16 px-4">
         {/* Stories Section */}
         <div>
           <h2 className="text-2xl font-bold mb-6 text-gray-800">Stories</h2>
-          <div className="space-y-10">
+          <div className="space-y-12">
             {categories.stories.map((category) => (
               <div key={category}>
-                <h3 className="text-lg font-medium mb-4 text-gray-700">{category}</h3>
+                <h3 className="text-xl font-bold mb-6 text-gray-700">{category}</h3>
                 {renderCarouselGrid(category)}
               </div>
             ))}
@@ -223,10 +348,10 @@ const CarouselBoard: React.FC = () => {
         {/* Activities Section */}
         <div>
           <h2 className="text-2xl font-bold mb-6 text-gray-800">Activities</h2>
-          <div className="space-y-10">
+          <div className="space-y-12">
             {categories.activities.map((category) => (
               <div key={category}>
-                <h3 className="text-lg font-medium mb-4 text-gray-700">{category}</h3>
+                <h3 className="text-xl font-bold mb-6 text-gray-700">{category}</h3>
                 {renderCarouselGrid(category)}
               </div>
             ))}
@@ -236,10 +361,10 @@ const CarouselBoard: React.FC = () => {
         {/* Cards Section */}
         <div>
           <h2 className="text-2xl font-bold mb-6 text-gray-800">Cards</h2>
-          <div className="space-y-10">
+          <div className="space-y-12">
             {categories.cards.map((category) => (
               <div key={category}>
-                <h3 className="text-lg font-medium mb-4 text-gray-700">{category}</h3>
+                <h3 className="text-xl font-bold mb-6 text-gray-700">{category}</h3>
                 {renderCarouselGrid(category)}
               </div>
             ))}
@@ -250,13 +375,83 @@ const CarouselBoard: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6">
+    <div className="max-w-[120rem] mx-auto">
       {/* Header Section */}
       <div className="text-center mb-8">
         <h1 className="text-4xl font-semibold mb-2">
-          Lets create a <span className="text-[#C099FF]">story</span>
+          Lets create a {""}
+          <AnimatePresence mode="wait">
+        <motion.span
+          key={words[index]}
+          className="text-[#C099FF] inline-block"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.5 }}
+        >
+          {words[index]}
+        </motion.span>
+      </AnimatePresence>
+
         </h1>
         <p className="text-gray-600 text-sm">Create your first story with a simple prompt</p>
+      </div>
+
+      {/* Radio Button Group */}
+      <div className="flex items-center gap-3 mt-4 mb-4 justify-center">
+        <div className="relative">
+          <input
+            type="radio"
+            id="story"
+            name="contentType"
+            value="story"
+            checked={selectedOption === "story"}
+            onChange={(e) => setSelectedOption(e.target.value)}
+            className="absolute opacity-0 w-full h-full cursor-pointer peer"
+          />
+          <label
+            htmlFor="story"
+            className="px-4 py-1.5 rounded-full text-sm font-medium cursor-pointer block peer-checked:bg-purple-100 peer-checked:text-purple-700 text-gray-600 hover:bg-gray-100"
+          >
+            Story
+          </label>
+        </div>
+
+        <div className="relative">
+          <input
+            type="radio"
+            id="activity"
+            name="contentType"
+            value="activity"
+            checked={selectedOption === "activity"}
+            onChange={(e) => setSelectedOption(e.target.value)}
+            className="absolute opacity-0 w-full h-full cursor-pointer peer"
+          />
+          <label
+            htmlFor="activity"
+            className="px-4 py-1.5 rounded-full text-sm font-medium cursor-pointer block peer-checked:bg-purple-100 peer-checked:text-purple-700 text-gray-600 hover:bg-gray-100"
+          >
+            Activity
+          </label>
+        </div>
+
+        <div className="relative">
+          <input
+            type="radio"
+            id="cards"
+            name="contentType"
+            value="cards"
+            checked={selectedOption === "cards"}
+            onChange={(e) => setSelectedOption(e.target.value)}
+            className="absolute opacity-0 w-full h-full cursor-pointer peer"
+          />
+          <label
+            htmlFor="cards"
+            className="px-4 py-1.5 rounded-full text-sm font-medium cursor-pointer block peer-checked:bg-purple-100 peer-checked:text-purple-700 text-gray-600 hover:bg-gray-100"
+          >
+            Cards
+          </label>
+        </div>
       </div>
 
       {/* Search Bar */}
@@ -267,33 +462,40 @@ const CarouselBoard: React.FC = () => {
             placeholder="example: create a story about how to walk my dog"
             className="w-full px-4 py-7 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent pl-10"
           />
+
+          
           <div className="absolute inset-y-0 left-3 flex items-center">
             <Search className="h-5 w-5 text-gray-400" />
           </div>
         </div>
         
         {/* Story Type Selection */}
-        <div className="flex items-center gap-3 mt-4 justify-center">
-          <button className="px-4 py-1.5 rounded-full bg-purple-100 text-purple-700 text-sm font-medium">Story</button>
-          <button className="px-4 py-1.5 rounded-full text-gray-600 text-sm font-medium hover:bg-gray-100">Activity</button>
-          <button className="px-4 py-1.5 rounded-full text-gray-600 text-sm font-medium hover:bg-gray-100">Cards</button>
-        </div>
+     
       </div>
 
       {/* Set Preference Section */}
       <div className="mb-8">
-        <h3 className="text-lg font-bold text-gray-700 mb-3">Set Preference</h3>
+        <h3 className="text-xl font-bold text-gray-700 mb-3">Set Preference</h3>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
-            <Image src="/avatar1.jpg" alt="Avatar" width={40} height={40} className="rounded-full" />
-            <Image src="/avatar2.jpg" alt="Avatar" width={40} height={40} className="rounded-full" />
-            <Image src="/avatar3.jpg" alt="Avatar" width={40} height={40} className="rounded-full" />
+            <Image src="/avatar/avatar1.jpg" alt="Avatar" width={50} height={50} className="rounded-full" />
+            <Image src="/avatar/avatar2.jpg" alt="Avatar" width={50} height={50} className="rounded-full" />
+            <Image src="/avatar/avatar2.jpg" alt="Avatar" width={50} height={50} className="rounded-full" />
           </div>
-          <button className="w-10 h-10 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400 hover:border-gray-400">
-            +
+          <button 
+            onClick={() => setIsCharacterModalOpen(true)}
+            className="w-12 h-12 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400 hover:border-gray-400 hover:text-gray-600 transition-colors duration-200"
+          >
+            <Plus/>
           </button>
         </div>
       </div>
+
+      {/* Create Character Modal */}
+      <CreateCharacterModal 
+        isOpen={isCharacterModalOpen}
+        onClose={() => setIsCharacterModalOpen(false)}
+      />
 
       {/* Sample Prompts */}
       <div className="mb-12">
@@ -312,8 +514,8 @@ const CarouselBoard: React.FC = () => {
 
       {/* Explore All Section */}
       <div>
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold">Explore All</h2>
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-2xl font-bold">Explore All</h2>
           <div className="relative">
             <input
               type="text"
@@ -327,61 +529,61 @@ const CarouselBoard: React.FC = () => {
           <TabsList className="flex space-x-4 mb-8 bg-transparent">
             <TabsTrigger 
               value="explore" 
-              className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-purple-600 data-[state=active]:text-purple-600 data-[state=active]:bg-transparent"
+              className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-[#6100FF] rounded-3xl data-[state=active]:text-purple-600 data-[state=active]:bg-[#F3F8FF]"
             >
               Explore All
             </TabsTrigger>
             <TabsTrigger 
               value="stories" 
-              className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-purple-600 data-[state=active]:text-purple-600 data-[state=active]:bg-transparent"
+              className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-[#6100FF] rounded-3xl data-[state=active]:text-purple-600 data-[state=active]:bg-[#F3F8FF]"
             >
               Stories
             </TabsTrigger>
             <TabsTrigger 
               value="activities" 
-              className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-purple-600 data-[state=active]:text-purple-600 data-[state=active]:bg-transparent"
+              className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-[#6100FF] rounded-3xl data-[state=active]:text-purple-600 data-[state=active]:bg-[#F3F8FF]"
             >
               Activities
             </TabsTrigger>
             <TabsTrigger 
               value="cards" 
-              className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-purple-600 data-[state=active]:text-purple-600 data-[state=active]:bg-transparent"
+              className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-[#6100FF] rounded-3xl data-[state=active]:text-purple-600 data-[state=active]:bg-[#F3F8FF]"
             >
               Cards
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="explore">
+          <TabsContent value="explore" className="space-y-12">
             {renderAllContent()}
           </TabsContent>
 
-          <TabsContent value="stories">
-            <div className="space-y-10">
+          <TabsContent value="stories" className="space-y-12 px-4">
+            <div className="space-y-12">
               {categories.stories.map((category) => (
                 <div key={category}>
-                  <h2 className="text-lg font-medium mb-4">{category}</h2>
+                  <h2 className="text-xl font-bold mb-6">{category}</h2>
                   {renderCarouselGrid(category)}
                 </div>
               ))}
             </div>
           </TabsContent>
 
-          <TabsContent value="activities">
-            <div className="space-y-10">
+          <TabsContent value="activities" className="space-y-12 px-4">
+            <div className="space-y-12">
               {categories.activities.map((category) => (
                 <div key={category}>
-                  <h2 className="text-lg font-medium mb-4">{category}</h2>
+                  <h2 className="text-xl font-bold mb-6">{category}</h2>
                   {renderCarouselGrid(category)}
                 </div>
               ))}
             </div>
           </TabsContent>
 
-          <TabsContent value="cards">
-            <div className="space-y-10">
+          <TabsContent value="cards" className="space-y-12 px-4">
+            <div className="space-y-12">
               {categories.cards.map((category) => (
                 <div key={category}>
-                  <h2 className="text-lg font-medium mb-4">{category}</h2>
+                  <h2 className="text-xl font-bold mb-6">{category}</h2>
                   {renderCarouselGrid(category)}
                 </div>
               ))}
