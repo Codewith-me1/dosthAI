@@ -8,6 +8,11 @@ import { Eye, Heart, Search, ChevronLeft, ChevronRight, Plus } from 'lucide-reac
 import { motion, AnimatePresence } from 'framer-motion';
 import CreateCharacterModal from './CreateCharacterModal';
 import Card from './Card';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
 interface CarouselItem {
   id: number;
@@ -21,7 +26,11 @@ const samplePrompts = [
   "The Magic Show & Joy",
   "Wizard School",
   "An Unexpected Day",
+  "This is a ",
+  "asdad",
   "The Submarine Tale",
+  "The Submarine Tale",
+  
   "Virtual School",
   "An Unexpected Hero"
 ];
@@ -274,13 +283,7 @@ useEffect(() => {
     return dummyCarousels.filter(item => item.category === category);
   };
 
-  const scrollCarousel = (elementId: string, direction: 'left' | 'right') => {
-    const container = document.getElementById(elementId);
-    if (container) {
-      const scrollAmount = direction === 'left' ? -300 : 300; // Card width + gap
-      container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
-  };
+  
 
   const renderCarouselGrid = (category: string) => {
     const items = filterCarouselsByCategory(category);
@@ -288,42 +291,54 @@ useEffect(() => {
     
     return (
       <div className="relative group">
-        <div className="absolute left-0 top-1/2 -translate-y-1/2 z-10">
-          <button 
-            onClick={() => scrollCarousel(carouselId, 'left')}
-            className="bg-white rounded-full p-2 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 -ml-4 hover:bg-gray-50"
-          >
-            <ChevronLeft className="h-6 w-6 text-gray-600" />
-          </button>
-        </div>
         
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 z-10">
-          <button 
-            onClick={() => scrollCarousel(carouselId, 'right')}
-            className="bg-white rounded-full p-2 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 -mr-4 hover:bg-gray-50"
-          >
-            <ChevronRight className="h-6 w-6 text-gray-600" />
-          </button>
-        </div>
+        <div className="absolute left-0 top-1/4 -translate-y-1/2 z-10">
+  <button 
+    className={`swiper-button-prev-${carouselId} bg-white rounded-full p-4 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 -ml-4 hover:bg-gray-50`}
+  >
+    <ChevronLeft className="h-6 w-6 text-[#6100FF] " />
+  </button>
+</div>
+
+<div className="absolute right-0 top-1/3 -translate-y-1/2 z-10">
+  <button 
+    className={`swiper-button-next-${carouselId} bg-white rounded-full p-4 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 -mr-4 hover:bg-gray-50`}
+  >
+    <ChevronRight className="h-6 w-6 text-[#6100FF] " />
+  </button>
+</div>
 
         <div className="overflow-hidden">
-          <div 
-            id={carouselId}
-            className="flex gap-4 overflow-x-auto scrollbar-hide flex-nowrap scroll-smooth"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          <Swiper
+            modules={[Navigation]}
+            
+            spaceBetween={30}
+            slidesPerView={1}
+            navigation={{
+              nextEl: `.swiper-button-next-${carouselId}`, // Custom class
+              prevEl: `.swiper-button-prev-${carouselId}`,
+            }}
+            breakpoints={{
+              640: { slidesPerView: 2 },
+              1024: { slidesPerView: 3 },
+              1280: { slidesPerView: 4 }
+            }}
+            className="!pb-10"
           >
             {items.map((item) => (
-              <Card
-                key={String(item.id)}
-                id={String(item.id)}
-                title={item.title}
-                image={item.image}
-                rating={item.rating}
-                category={item.category}
-                type={activeCategory === 'stories' ? 'story' : 'activity'}
-              />
+              <SwiperSlide className='max-w-[20rem]'  key={item.id}>
+                  <Card
+                    key={String(item.id)}
+                    id={String(item.id)}
+                    title={item.title}
+                    image={item.image}
+                    rating={item.rating}
+                    category={item.category}
+                    type={activeCategory === 'stories' ? 'story' : 'activity'}
+                  />
+              </SwiperSlide>
             ))}
-          </div>
+          </Swiper>
         </div>
       </div>
     );
@@ -455,67 +470,89 @@ useEffect(() => {
       </div>
 
       {/* Search Bar */}
-      <div className="relative max-w-2xl mx-auto mb-8">
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="example: create a story about how to walk my dog"
-            className="w-full px-4 py-7 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent pl-10"
-          />
-
-          
-          <div className="absolute inset-y-0 left-3 flex items-center">
-            <Search className="h-5 w-5 text-gray-400" />
-          </div>
-        </div>
-        
-        {/* Story Type Selection */}
-     
-      </div>
-
-      {/* Set Preference Section */}
-      <div className="mb-8">
-        <h3 className="text-xl font-bold text-gray-700 mb-3">Set Preference</h3>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <Image src="/avatar/avatar1.jpg" alt="Avatar" width={50} height={50} className="rounded-full" />
-            <Image src="/avatar/avatar2.jpg" alt="Avatar" width={50} height={50} className="rounded-full" />
-            <Image src="/avatar/avatar2.jpg" alt="Avatar" width={50} height={50} className="rounded-full" />
-          </div>
-          <button 
-            onClick={() => setIsCharacterModalOpen(true)}
-            className="w-12 h-12 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400 hover:border-gray-400 hover:text-gray-600 transition-colors duration-200"
-          >
-            <Plus/>
-          </button>
-        </div>
-      </div>
-
-      {/* Create Character Modal */}
-      <CreateCharacterModal 
-        isOpen={isCharacterModalOpen}
-        onClose={() => setIsCharacterModalOpen(false)}
+      <div className="storySection flex flex-col items-center px-4 md:px-0">
+  {/* Search Box */}
+  <div className="relative w-full max-w-3xl mb-8">
+    <div className="w-full">
+      <input
+        type="text"
+        placeholder="example: create a story about how to walk my dog"
+        className="w-full px-12 py-5 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-700 text-base"
       />
+      {/* Search Icon */}
+      <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+        <Search className="h-5 w-5 text-gray-400" />
+      </div>
+    </div>
+  </div>
 
-      {/* Sample Prompts */}
-      <div className="mb-12">
-        <h3 className="text-lg font-bold text-[#000000] mb-3">Sample Prompts</h3>
-        <div className="flex flex-wrap gap-3">
-          {samplePrompts.map((prompt, index) => (
-            <button
-              key={index}
-              className="px-4 py-2 rounded-full border border-gray-200 text-sm text-gray-600 hover:border-gray-300 hover:bg-gray-50"
-            >
-              {prompt}
-            </button>
-          ))}
+  {/* Set Preference Section */}
+  <div className="mb-10 w-full max-w-3xl">
+    <h3 className="text-xl font-semibold text-gray-800 mb-4">Set Preference</h3>
+    <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
+        <div className="flex flex-col items-center">
+          <Image src="/avatar/avatar1.jpg" alt="Avatar1" width={60} height={60} className="rounded-lg" />
+          <span className="text-xs mt-1 text-gray-600">Anu & her mom</span>
+        </div>
+        <div className="flex flex-col items-center">
+          <Image src="/avatar/avatar2.jpg" alt="Avatar2" width={60} height={60} className="rounded-lg" />
+          <span className="text-xs mt-1 text-gray-600">Raj & Friends</span>
+        </div>
+        <div className="flex flex-col items-center">
+          <Image src="/avatar/avatar1.jpg" alt="Avatar3" width={60} height={60} className="rounded-lg" />
+          <span className="text-xs mt-1 text-gray-600">Karate Cat</span>
         </div>
       </div>
+      {/* Plus button */}
+      <button
+        onClick={() => setIsCharacterModalOpen(true)}
+        className="w-14 h-14 mb-5 flex flex-col items-center justify-center rounded-full border-2 border-dashed border-gray-300 hover:border-gray-400 hover:text-gray-600 text-gray-400 transition-all duration-200"
+      >
+        <Plus className="w-6 h-6" />
+      </button>
+    </div>
+  </div>
+
+  {/* Modal */}
+  <CreateCharacterModal
+    isOpen={isCharacterModalOpen}
+    onClose={() => setIsCharacterModalOpen(false)}
+  />
+
+  {/* Sample Prompts */}
+  <div className="w-full max-w-3xl ">
+    <h3 className="text-lg md:text-lg font-bold text-gray-800 mb-4">Sample Prompts</h3>
+  
+  </div>
+</div>
+
+  {/* Sample Prompts */}
+ 
+  <div className="w-full ml-0 md:ml-5 mb-12">
+  <Swiper
+    modules={[Navigation]}
+    
+    spaceBetween={30} // exactly 1px gap
+    slidesPerView="auto" // show all slides together
+    className="!pb-10"
+    grabCursor={true}
+  >
+    {samplePrompts.map((prompt, index) => (
+      <SwiperSlide key={index} className="!w-auto">
+        <button
+          className="flex items-center gap-2 whitespace-nowrap px-5 py-3 rounded-lg border border-gray-300 text-sm text-gray-700 bg-gray-50 hover:border-gray-400 hover:bg-white transition-all duration-200"
+        >
+          <span className="text-yellow-500">«</span> {prompt}
+        </button>
+      </SwiperSlide>
+    ))}
+  </Swiper>
+</div>
 
       {/* Explore All Section */}
       <div>
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold">Explore All</h2>
           <div className="relative">
             <input
               type="text"
