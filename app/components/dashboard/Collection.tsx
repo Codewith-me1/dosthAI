@@ -73,18 +73,7 @@ const Collection = () => {
     <div className="w-full max-w-[120rem] mx-auto px-4 sm:px-6 lg:px-8">
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <div className="flex items-center gap-4">
-          <h1 className="text-xl sm:text-2xl font-semibold text-gray-900">All Stories & Activities</h1>
-          {/* Role Selector */}
-          <select
-            value={userRole}
-            onChange={(e) => setUserRole(e.target.value as UserRole)}
-            className="px-3 py-1 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6100FF] focus:border-transparent"
-          >
-            <option value="student">Student</option>
-            <option value="bcba">BCBA</option>
-          </select>
-        </div>
+       
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
           <div className="relative flex-1 sm:flex-none">
             <input

@@ -14,6 +14,7 @@ export interface KidProfile {
   age: string;
   conditions: string[];
   preferNotToSay: boolean;
+  role?: string;
 }
 
 interface AddKidModalProps {

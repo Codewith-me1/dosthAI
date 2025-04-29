@@ -13,7 +13,8 @@ interface CompleteRegistrationData {
     signup: {
         name: string;
         email: string;
-        password: string;
+        password?: string;
+        socialProvider?: 'google' | 'apple';
     };
     userDetails?: UserDetailsData;
     kidsProfile?: KidsProfileData;
@@ -22,6 +23,7 @@ interface CompleteRegistrationData {
 export default function SignUp() {
     // Step state
     const [currentStep, setCurrentStep] = useState<Step>('signup');
+    
     
     // Complete registration data
     const [registrationData, setRegistrationData] = useState<CompleteRegistrationData>({
@@ -135,6 +137,44 @@ export default function SignUp() {
                 password: formData.password
             }
         }));
+
+          //USE BELOW CODE ONLY IF YOU ARE USING FIREBASE AUTH and FIRESTORE TO STORE DATA
+
+        // Here you would typically make an API call to sign in the user
+        // createUserWithEmailAndPassword is Used with ta React Libaray with Firebase Auth to Create User 
+        
+
+        // const [createUserWithEmailAndPassword, user, loading, error] =
+        // useCreateUserWithEmailAndPassword(auth);
+        
+        // const handleSubmit = (e: FormEvent) => {
+        //     e.preventDefault();
+        //     createUserWithEmailAndPassword(formData.email,formData.password);
+        //     
+        //     
+        //   };
+        //saveDB is a Database.ts file should be in the main folder firebase/auth/database.ts below function 
+        // saveUserData is Used to Make Sure When User CreateUserWithEmailAndPassWord Also sends the Name 
+
+        // Also 
+        // useEffect(() => {
+        //     if (user) {
+        //       console.log("User Created Successfully:", user);
+        
+        //       saveUserData(user.user.uid, {
+        //         email: user.user.email,
+                    // name:formData.name
+                // 
+        //         displayName: user.user.displayName,
+        //         createdAt: new Date(),
+        //       });
+        //       console.log("Saved to Db Also");
+        //       router.push("/"); 
+        //     }
+        //   }, [user, router]);
+        
+        // 
+
         setCurrentStep('details');
     };
 
@@ -170,6 +210,26 @@ export default function SignUp() {
         // Here you would typically make an API call to register the user
         console.log('Complete registration data:', data);
         // Navigate to dashboard or success page
+    };
+
+    // Handle social sign in
+    const handleSocialSignIn = async (provider: 'google' | 'apple') => {
+        // Here you would typically handle the social authentication
+        // For example with Firebase:
+        // const result = await signInWithPopup(auth, provider === 'google' ? googleProvider : appleProvider);
+        
+        // After successful social auth, save the data and move to next step
+        setRegistrationData(prev => ({
+            ...prev,
+            signup: {
+                name: '', // This will be filled from the social provider
+                email: '', // This will be filled from the social provider
+                socialProvider: provider
+            }
+        }));
+        
+        // Move to user details step
+        setCurrentStep('details');
     };
 
     // Render appropriate step
@@ -337,11 +397,19 @@ export default function SignUp() {
 
         {/* Social Login Options */}
         <div className="mt-8 space-y-4">
-            <button className="w-full text-black font-medium flex items-center justify-center gap-4 px-5 py-4 border border-gray-300 rounded-3xl hover:bg-gray-50 transition-all duration-200 hover:scale-[0.98] hover:shadow-sm active:scale-[0.97] active:shadow-inner">
+            <button 
+                onClick={() => handleSocialSignIn('google')}
+                type="button"
+                className="w-full text-black font-medium flex items-center justify-center gap-4 px-5 py-4 border border-gray-300 rounded-3xl hover:bg-gray-50 transition-all duration-200 hover:scale-[0.98] hover:shadow-sm active:scale-[0.97] active:shadow-inner"
+            >
                 <Image src="/icons/google.svg" alt="Google" width={24} height={24} />
                 <span>Sign in with Google</span>
             </button>
-            <button className="w-full flex items-center text-black font-medium justify-center gap-4 px-5 py-4 border border-gray-300 rounded-3xl hover:bg-gray-50 transition-all duration-200 hover:scale-[0.98] hover:shadow-sm active:scale-[0.97] active:shadow-inner">
+            <button 
+                onClick={() => handleSocialSignIn('apple')}
+                type="button"
+                className="w-full flex items-center text-black font-medium justify-center gap-4 px-5 py-4 border border-gray-300 rounded-3xl hover:bg-gray-50 transition-all duration-200 hover:scale-[0.98] hover:shadow-sm active:scale-[0.97] active:shadow-inner"
+            >
                 <Image src="/icons/apple.svg" alt="Apple" width={24} height={24} />
                 <span>Sign in with Apple</span>
             </button>
