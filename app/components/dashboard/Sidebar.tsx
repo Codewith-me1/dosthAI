@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { Plus, Menu, X, Edit2, Trash2 } from 'lucide-react';
 import AddKidModal, { KidProfile as KidProfileType } from './AddKidModal';
 import KidProfile from './KidProfile';
-import Link from 'next/link';
 
 interface SidebarProps {
   activeMenu?: string;
@@ -130,11 +129,10 @@ const Sidebar: React.FC<SidebarProps> = ({ activeMenu = 'All', onMenuClick }) =>
             <ul className="space-y-1">
               {kids.map((kid) => (
                 <li key={kid.id} className="group relative">
-                  <Link
-                    href={{
-                      pathname: `/mycollection/kids/${kid.id}`,
-                      query: { name: kid.name, age: kid.age, role: kid.role },
-                    }}
+                  {/* <Link
+                    href={
+                       `/mycollection/kids/${kid.id}`
+                    }
                     className={`w-full inline-block text-left px-4 py-2 text-sm transition-colors duration-200 ${
                       selectedKid?.id === kid.id
                         ? 'bg-[#F3F8FF] text-[#6100FF] font-medium'
@@ -142,7 +140,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeMenu = 'All', onMenuClick }) =>
                     }`}
                   >
                     {kid.name}
-                  </Link>
+                  </Link> */}
+                  <h1>Kid</h1>
                   <div className="absolute right-2 top-1/2 -translate-y-1/2 hidden group-hover:flex gap-1">
                     <button
                       onClick={(e) => {
