@@ -209,7 +209,6 @@ export default function SignUp() {
     const handleCompleteRegistration = async (data: CompleteRegistrationData) => {
         // Here you would typically make an API call to register the user
         console.log('Complete registration data:', data);
-        // Navigate to dashboard or success page
     };
 
     // Handle social sign in
@@ -275,14 +274,14 @@ export default function SignUp() {
                     </div>
 
                     {/* Heading */}
-                    <div className="mb-8 ">
+                    <div className="mb-8 mt-10 lg:mt-0 p-2 lg:p-0">
                         <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Supporting</h1>
                         <h2 className="text-3xl md:text-4xl font-bold text-gray-800">Neurodivergent Community</h2>
                     </div>
                 </div>
 
                 {/* Main Image - Positioned at bottom */}
-                <div className="w-[70%] max-w-xl mx-auto relative ">
+                <div className="w-[90%] lg:w-[100%] max-w-xl lg:mx-auto relative ">
   <div className=" -rotate-z-10 ">
     <Image
       src="/catimage.png"

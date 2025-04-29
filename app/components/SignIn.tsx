@@ -4,24 +4,23 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Eye, EyeOff } from 'lucide-react';
+import { useEffect } from 'react';
 
 export default function SignIn() {
-    // Form state
+    
     const [formData, setFormData] = useState({
         email: '',
         password: ''
     });
 
-    // Error state
+    
     const [errors, setErrors] = useState({
         email: '',
         password: ''
     });
 
-    // Password visibility state
     const [showPassword, setShowPassword] = useState(false);
 
-    // Handle input changes
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -29,7 +28,6 @@ export default function SignIn() {
             [name]: value
         }));
         
-        // Clear errors when user starts typing
         if (errors[name as keyof typeof errors]) {
             setErrors(prev => ({
                 ...prev,
@@ -38,7 +36,6 @@ export default function SignIn() {
         }
     };
 
-    // Validate email format
     const isValidEmail = (email: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
@@ -48,33 +45,32 @@ export default function SignIn() {
     const handleSignInSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         
-        // Reset errors
         const newErrors = {
             email: '',
             password: ''
         };
 
-        // Validate email
         if (!formData.email) {
             newErrors.email = 'Email is required';
         } else if (!isValidEmail(formData.email)) {
             newErrors.email = 'Please enter a valid email address';
         }
 
-        // Validate password
         if (!formData.password) {
             newErrors.password = 'Password is required';
         }
 
-        // Check if there are any errors
         if (Object.values(newErrors).some(error => error !== '')) {
             setErrors(newErrors);
             return;
         }
 
-        // Here you would typically make an API call to sign in the user
+      
+
+        
+    
         console.log('Sign in data:', formData);
-        // Navigate to dashboard or home page
+        
     };
 
     return (
@@ -99,14 +95,14 @@ export default function SignIn() {
                     </div>
 
                     {/* Heading */}
-                    <div className="mb-8">
+                    <div className="mb-8  mt-10 lg:mt-0 p-2 lg:p-0">
                         <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Supporting</h1>
                         <h2 className="text-3xl md:text-4xl font-bold text-gray-800">Neurodivergent Community</h2>
                     </div>
                 </div>
 
                 {/* Main Image */}
-                <div className="w-[70%] max-w-xl mx-auto relative ">
+                <div className="w-[90%] lg:w-[70%]  max-w-xl lg:mx-auto relative ">
                     <div className="-rotate-z-10">
                         <Image
                             src="/catimage.png"
