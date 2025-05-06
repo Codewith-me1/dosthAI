@@ -8,19 +8,13 @@ import Sidebar from '@/app/components/dashboard/Sidebar';
 import KidProfile from '@/app/components/dashboard/KidProfile';
 import Card from '@/app/components/dashboard/Card';
 import CreateAssessment from '@/app/components/dashboard/CreateAssessment';
-
-// Import the new StoryPopup and its related types
-import StoryPopup from '@/app/components/dashboard/VideoPopup'; 
+import StoryPopup from '@/app/components/dashboard/VideoPopup';
 
 // --- Data Import ---
-// Directly import the JSON data. Make sure tsconfig allows json imports
-// and the file path is correct.
-import storyJson from "@/public/story_json.json" // Adjust path to your JSON file
-
+import storyJson from "@/public/story_json.json";
+import paintStory from "@/public/paintStory.json"; // Import paintStory
 
 // --- Interfaces ---
-
-
 interface KidInfo {
   id: string;
   name: string;
@@ -28,19 +22,31 @@ interface KidInfo {
   role: string;
 }
 
+// Updated CardInfo to potentially include a dataKey
 interface CardInfo {
-    id: string;
-    title: string;
-    image: string;
-    rating: number;
-    category: string;
-    type: 'story' | 'activity'; // Make type more specific
-    // Optional: Add a field to link specific story data if needed later
-    // storyDataId?: string;
+  id: string;
+  title: string;
+  image: string;
+  rating: number;
+  category: string;
+  type: 'story' | 'activity';
+  dataKey?: 'storyJson' | 'paintStoryJson'; // Helps identify which JSON to use
 }
 
+interface StoryStep {
+  audio: string;
+  image: string;
+  step: string;
+  prompt?: string;
+}
 
-// --- Mock Data/Functions (Keep or replace with real logic) ---
+interface StoryData {
+  title: string;
+  story: StoryStep[];
+  thumbnailUrl?: string; // Optional thumbnail for card image
+}
+
+// --- Mock Data/Functions ---
 function getKidById(id: string | string[]): KidInfo | null {
   const kids: KidInfo[] = [
     { id: '1', name: 'John Doe', age: '8', role: 'student' },
@@ -49,83 +55,98 @@ function getKidById(id: string | string[]): KidInfo | null {
   return kids.find(kid => kid.id === id) || null;
 }
 
-// Updated dummy cards - Ensure type is correctly assigned
+// Updated dummy cards - Assign dataKey and update activity card
 const dummyCards: CardInfo[] = [
   {
     id: 'c1',
-    title: 'Coping Skills: Sad', // Match title from JSON for clarity
-    image: '/dummyimage.jpg', // Or use storyJson.story[0].image
+    title: 'Coping Skills: Sad', // Example title from storyJson
+    image: '/dummyimage.jpg', // Use thumbnail from JSON if available
     rating: 4.5,
-    category: 'Coping Strategies', // Match category
+    category: 'Coping Strategies',
     type: 'story',
+    dataKey: 'storyJson',
   },
   {
     id: 'c2',
-    title: 'Getting Ready for School',
-    image: '/dummyimage.jpg',
+    title: paintStory.title || 'Creative Painting Fun', // Use title from paintStory.json
+    image: '/dummyimage.jpg', // Use specific image or thumbnail
     rating: 4.8,
-    category: 'routine',
+    category: 'Creative Activity', // Updated category
     type: 'activity',
+    dataKey: 'paintStoryJson', // Link this card to paintStory data
   },
   {
     id: 'c3',
-    title: 'Bedtime Preparation',
+    title: 'Bedtime Preparation', // Another story example
     image: '/dummyimage.jpg',
     rating: 4.2,
     category: 'routine',
     type: 'story',
+    // Assuming this might use a different story JSON or the same one based on title match later
+    // For now, if it's meant to use 'storyJson' and has a different title, handleCardClick would need logic
+    // to find the specific story within storyJson if it contained multiple stories.
+    // Or, it might be a different JSON altogether. For this example, let's assume it's a placeholder.
   },
 ];
 
 
-interface StoryStep {
-  audio: string;
-  image: string;
-  step: string; 
-  prompt?: string; 
-}
-
-interface StoryData {
-  title: string;
-  story: StoryStep[];
-  thumbnailUrl?: string;
-}
-
 export default function KidPage() {
-  const {id} = useParams()
-  const kid = getKidById(id??"")
+  const { id } = useParams();
+  const kid = getKidById(id ?? "");
   const [storyPopupOpen, setStoryPopupOpen] = useState(false);
   const [currentStoryData, setCurrentStoryData] = useState<StoryData | null>(null);
   const [loadedStoryJson, setLoadedStoryJson] = useState<StoryData | null>(null);
+  const [loadedPaintStoryJson, setLoadedPaintStoryJson] = useState<StoryData | null>(null); // State for paintStory
   const [showCreateAssessment, setShowCreateAssessment] = useState(false);
 
   useEffect(() => {
-    // If you were fetching, you'd do it here.
+    // Load and format storyJson
     if (storyJson && storyJson.story) {
-        const formattedData: StoryData = {
-            title: storyJson.title,
-            story: storyJson.story,
-        };
-        setLoadedStoryJson(formattedData);
+      const formattedData: StoryData = {
+        title: storyJson.title,
+        story: storyJson.story,
+        
+      };
+      setLoadedStoryJson(formattedData);
     } else {
-        console.error("Failed to load or parse story JSON.");
-        // Handle error state if necessary
+      console.error("Failed to load or parse storyJson.");
+    }
+
+    // Load and format paintStory
+    if (paintStory && paintStory.story) {
+      const formattedPaintData: StoryData = {
+        title: paintStory.title,
+        story: paintStory.story,
+
+      };
+      setLoadedPaintStoryJson(formattedPaintData);
+    } else {
+      console.error("Failed to load or parse paintStory.json.");
     }
   }, []); // Empty array ensures this runs only once on mount
 
   const handleCardClick = (card: CardInfo) => {
-    if (card.type === 'story' && loadedStoryJson) {
-       console.log("Opening story:", loadedStoryJson.title);
-       setCurrentStoryData(loadedStoryJson); // Set the data for the popup
-       setStoryPopupOpen(true);             // Open the popup
-    } else if (card.type === 'activity') {
-        console.log("Clicked an activity card (no popup defined yet):", card.title);
-    } else {
-        console.warn("Story data not loaded or card type is not 'story'.");
+    if (card.type === 'story' && card.dataKey === 'storyJson' && loadedStoryJson) {
+      console.log("Opening story:", loadedStoryJson.title);
+      setCurrentStoryData(loadedStoryJson);
+      setStoryPopupOpen(true);
+    } else if (card.type === 'activity' && card.dataKey === 'paintStoryJson' && loadedPaintStoryJson) {
+      console.log("Opening paint activity:", loadedPaintStoryJson.title);
+      setCurrentStoryData(loadedPaintStoryJson); // Set paintStory data for the popup
+      setStoryPopupOpen(true);
+    } else if (card.type === 'story' && !card.dataKey && loadedStoryJson) {
+      // Fallback for generic story cards if needed, or cards that might use a different mechanism
+      // For card 'c3' if it doesn't have a dataKey but is a story, it would use loadedStoryJson by default
+      // This part depends on how you want to handle cards without explicit dataKeys
+      console.log("Opening generic story (fallback):", loadedStoryJson.title);
+      setCurrentStoryData(loadedStoryJson);
+      setStoryPopupOpen(true);
+    }
+    else {
+      console.warn("Story/Activity data not loaded, card type/dataKey mismatch, or no action defined for:", card.title, card.type, card.dataKey);
     }
   };
 
-  // If kid data is not found
   if (!kid) {
     return notFound();
   }
@@ -134,7 +155,7 @@ export default function KidPage() {
     <div className="min-h-screen">
       <Sidebar />
       <main className="lg:pl-64">
-        <div className="max-w-7xl mx-20  px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-20 px-4 sm:px-6 lg:px-8 py-8">
           {showCreateAssessment ? (
             <CreateAssessment kidName={kid.name} onBack={() => setShowCreateAssessment(false)} />
           ) : (
@@ -170,6 +191,8 @@ export default function KidPage() {
             open={storyPopupOpen}
             onClose={() => {
               setStoryPopupOpen(false);
+              // Optionally reset currentStoryData to null if you want fresh state next time
+              // setCurrentStoryData(null);
             }}
             storyData={currentStoryData}
           />
