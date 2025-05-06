@@ -68,7 +68,9 @@ export default function Header({ username = 'Username', credits = 50 }: HeaderPr
                         {/* User Menu */}
                         <div className="flex items-center gap-2">
                             <button className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                                <Link href='/account'>
                                 <span className="text-gray-700 font-medium">{username}</span>
+                                </Link>
                                 <ChevronDown className="w-4 h-4 text-gray-600" />
                             </button>
                             <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">

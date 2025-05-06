@@ -1,0 +1,59 @@
+{
+  "age": "0-5",
+  "country": "US",
+  "genre": "Educational",
+  "id": "09a188c0-f435-11ef-b059-3914790b8555",
+  "isDraft": true,
+  "isPremium": false,
+  "isPreview": true,
+  "isPublic": false,
+  "maxAge": 5,
+  "owner": "A3LGFYmuZAfPr2n14cK7F043n7f2",
+  "showOnHome": false,
+  "story": [
+    {
+      "audio": "https://firebasestorage.googleapis.com/v0/b/eetha-37cb1/o/audio%2F37012962-9594-4728-88e7-6c6c460e392a.mp3?alt=media&token=01d22f58-94d3-4b28-906b-0083edf53a0b",
+      "image": "https://firebasestorage.googleapis.com/v0/b/eetha-37cb1/o/images%2F615f2e7d-4bbd-43d6-b45b-7e5c55db5bc7.png?alt=media&token=2ee34db0-4660-4a4b-8305-f9c07c8d3f90",
+      "prompt": "Create an image of a 7-year-old Asian girl standing in front of a blank canvas, holding a paintbrush and looking curious., The girl is a 7-year-old Asian with a short bob haircut, wearing a red apron over a white t-shirt.",
+      "step": "I feel excited and a little nervous about starting my first painting."
+    },
+    {
+      "audio": "https://firebasestorage.googleapis.com/v0/b/eetha-37cb1/o/audio%2Fe57bac6d-7f76-4853-9a2f-5491fd6f648d.mp3?alt=media&token=4bf7f8d2-4729-483e-88ff-3658ec7d9353",
+      "image": "https://firebasestorage.googleapis.com/v0/b/eetha-37cb1/o/images%2F1024px.png?alt=media&token=1ea8300d-d0fd-4e3b-851b-b130c18330b8",
+      "prompt": "Create an image of the girl taking a deep breath and smiling slightly at the canvas., The girl is a 7-year-old Asian with a short bob haircut, wearing a red apron over a white t-shirt.",
+      "step": "It's okay to feel nervous! Starting something new can be both exciting and a little scary."
+    },
+    {
+      "audio": "https://firebasestorage.googleapis.com/v0/b/eetha-37cb1/o/audio%2F5cb657f7-540c-4c0b-8c8e-6f5ebd26ef4e.mp3?alt=media&token=1034a820-19c1-422c-bc15-1f2927b9943f",
+      "image": "https://firebasestorage.googleapis.com/v0/b/eetha-37cb1/o/images%2F1024px.png?alt=media&token=1ea8300d-d0fd-4e3b-851b-b130c18330b8",
+      "prompt": "Create an image of the girl squeezing paint onto a palette while looking thoughtfully at her selection of colors., The girl is a 7-year-old Asian with a short bob haircut, wearing a red apron over a white t-shirt.",
+      "step": "I can start by choosing my favorite colors and calmly placing them on the palette."
+    },
+    {
+      "audio": "https://firebasestorage.googleapis.com/v0/b/eetha-37cb1/o/audio%2Fdd5f7b30-4884-4996-9820-fdcba27e5fdc.mp3?alt=media&token=f0b5111d-d001-4158-9e83-badcb6d6dfc0",
+      "image": "https://firebasestorage.googleapis.com/v0/b/eetha-37cb1/o/images%2F1024px.png?alt=media&token=1ea8300d-d0fd-4e3b-851b-b130c18330b8",
+      "prompt": "Create an image of the girl confidently painting a large, colorful circle on the canvas., The girl is a 7-year-old Asian with a short bob haircut, wearing a red apron over a white t-shirt.",
+      "step": "I will begin by painting a simple shape, like a circle or a rectangle, and see how I feel."
+    },
+    {
+      "audio": "https://firebasestorage.googleapis.com/v0/b/eetha-37cb1/o/audio%2F8b8090ee-6a35-4559-ab90-c1fbb89dd831.mp3?alt=media&token=08732832-9b41-457f-94a8-9d0aea4ad0a0",
+      "image": "https://firebasestorage.googleapis.com/v0/b/eetha-37cb1/o/images%2F1024px.png?alt=media&token=1ea8300d-d0fd-4e3b-851b-b130c18330b8",
+      "prompt": "Create an image of the girl smiling as she carefully adds more colors and shapes to her painting., The girl is a 7-year-old Asian with a short bob haircut, wearing a red apron over a white t-shirt.",
+      "step": "When I take my time and enjoy the process, the painting becomes more fun and less scary."
+    },
+    {
+      "audio": "https://firebasestorage.googleapis.com/v0/b/eetha-37cb1/o/audio%2Ffdd131cb-99c1-43c7-9202-9924d2c18819.mp3?alt=media&token=a2113d6d-7d0e-4423-849f-63661a3eb604",
+      "image": "https://firebasestorage.googleapis.com/v0/b/eetha-37cb1/o/images%2F1024px.png?alt=media&token=1ea8300d-d0fd-4e3b-851b-b130c18330b8",
+      "prompt": "Create an image of the girl holding up her colorful painting, grinning with pride., The girl is a 7-year-old Asian with a short bob haircut, wearing a red apron over a white t-shirt, showing a vibrant painting.",
+      "step": "As I finish my painting, I feel proud and happy with my creation."
+    },
+    {
+      "audio": "https://firebasestorage.googleapis.com/v0/b/eetha-37cb1/o/audio%2Fbdb23229-ab98-4bfd-ad22-5918f4850678.mp3?alt=media&token=19881276-c421-40f2-9994-ebb6f19665aa",
+      "image": "https://firebasestorage.googleapis.com/v0/b/eetha-37cb1/o/images%2F1024px.png?alt=media&token=1ea8300d-d0fd-4e3b-851b-b130c18330b8",
+      "prompt": "Create an image of the girl showing her painting to her family, who are all smiling and clapping in support., The girl is a 7-year-old Asian with a short bob haircut, wearing a red apron over a white t-shirt; her family includes a mother (Asian, wearing a yellow sweater), father (Asian, wearing a blue shirt), and a younger brother (Asian, wearing a green t-shirt).",
+      "step": "Painting helps me express my feelings and allows others to see my creativity."
+    }
+  ],
+  "timeStamp": "February 26, 2025 at 5:00:10\u202fPM UTC+5:30",
+  "title": "paint"
+}

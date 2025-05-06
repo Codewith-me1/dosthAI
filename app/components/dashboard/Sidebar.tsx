@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Plus, Menu, X, Edit2, Trash2 } from 'lucide-react';
 import AddKidModal, { KidProfile as KidProfileType } from './AddKidModal';
-import KidProfile from './KidProfile';
+import Link from 'next/link';
 
 interface SidebarProps {
   activeMenu?: string;
@@ -129,10 +129,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeMenu = 'All', onMenuClick }) =>
             <ul className="space-y-1">
               {kids.map((kid) => (
                 <li key={kid.id} className="group relative">
-                  {/* <Link
-                    href={
-                       `/mycollection/kids/${kid.id}`
-                    }
+                  <Link
+                    href={`/mycollection/kids/${kid.id}`}
                     className={`w-full inline-block text-left px-4 py-2 text-sm transition-colors duration-200 ${
                       selectedKid?.id === kid.id
                         ? 'bg-[#F3F8FF] text-[#6100FF] font-medium'
@@ -140,8 +138,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeMenu = 'All', onMenuClick }) =>
                     }`}
                   >
                     {kid.name}
-                  </Link> */}
-                  <h1>Kid</h1>
+                  </Link>
                   <div className="absolute right-2 top-1/2 -translate-y-1/2 hidden group-hover:flex gap-1">
                     <button
                       onClick={(e) => {
@@ -193,11 +190,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeMenu = 'All', onMenuClick }) =>
       </aside>
 
       {/* Main Content Area */}
-      {selectedKid && (
-        <div className="flex-1 overflow-auto bg-gray-50">
-          <KidProfile name={selectedKid.name} age={selectedKid.age} role={selectedKid.role || 'student'} />
-        </div>
-      )}
+      {/* Removed local KidProfile rendering for selectedKid */}
 
       <AddKidModal
         isOpen={isModalOpen}

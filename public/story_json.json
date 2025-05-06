@@ -1,0 +1,54 @@
+{
+  "country": "US",
+  "age": "0-5",
+  "genre": "Coping Strategies",
+  "id": "063d2230-ff24-11ef-ad94-05f69baf4c8e",
+  "isDraft": false,
+  "isPremium": true,
+  "isPreview": true,
+  "isPublic": true,
+  "makePublic": true,
+  "maxAge": 5,
+  "owner": "nyC6A0vGUBOu8LVpZI9xeAvPpgE2",
+  "showOnHome": false,
+  "story": [
+    {
+      "audio": "https://firebasestorage.googleapis.com/v0/b/eetha-37cb1/o/audio%2F264d7f3e-f774-4493-b46c-6e16e04ef5b1.mp3?alt=media&token=7fac2925-ac1f-4747-ae31-1b95f6c550d7",
+      "image": "https://firebasestorage.googleapis.com/v0/b/eetha-37cb1/o/images%2Fbe8e76e9-fcb8-4751-993f-7b8fcee85932.png?alt=media&token=5d2bc9e6-46c5-473b-9481-749356142227",
+      "prompt": "Create an image of an 8-year-old Hispanic girl sitting on her bed with a thoughtful expression, hugging her teddy bear, with a soft, calming atmosphere in her bedroom., The girl is an 8-year-old Hispanic with long brown hair, wearing a pink pajama set with stars.",
+      "step": "Sometimes, I feel sad, and that's okay."
+    },
+    {
+      "audio": "https://firebasestorage.googleapis.com/v0/b/eetha-37cb1/o/audio%2F888b118b-98e8-4750-8174-ea3c0cc400c0.mp3?alt=media&token=b655a205-e678-46d0-bf77-f16ef518ba6f",
+      "image": "https://firebasestorage.googleapis.com/v0/b/eetha-37cb1/o/images%2Ff5725224-a8ff-4d90-9e18-7708e6b13fc9.png?alt=media&token=e9891386-5952-4bda-ab2a-000f887de42d",
+      "prompt": "Create an image of the girl talking to her mother in the living room. The mother is listening attentively with a supportive expression. The girl is an 8-year-old Hispanic with long brown hair, wearing a pink pajama set. Her mother is Hispanic, wearing a blue blouse and jeans",
+      "step": "It's important to remember that I can talk to someone I trust about how I'm feeling."
+    },
+    {
+      "audio": "https://firebasestorage.googleapis.com/v0/b/eetha-37cb1/o/audio%2F4176f3b6-e184-47de-9cc1-37d87527d9a3.mp3?alt=media&token=f718fe1f-b9ed-44f7-b42c-6f113d163cf6",
+      "image": "https://firebasestorage.googleapis.com/v0/b/eetha-37cb1/o/images%2F4371fe2a-4fd0-47db-82c6-42361d72d7ab.png?alt=media&token=48289212-731b-451d-9d57-ee07d0e3f302",
+      "prompt": "Create an image of the girl sitting cross-legged on the floor of her bedroom, taking deep breaths with eyes closed and her hands resting on her knees in a peaceful setting., The girl is an 8-year-old Hispanic with long brown hair, wearing a comfortable pink pajama set.",
+      "step": "I can also try taking deep breaths or counting to ten slowly when I'm sad."
+    },
+    {
+      "audio": "https://firebasestorage.googleapis.com/v0/b/eetha-37cb1/o/audio%2F954d1df0-8ccc-444f-9a86-60a9c59ef5fd.mp3?alt=media&token=17c95ee5-8561-4a0d-8eb8-f5de1f909143",
+      "image": "https://firebasestorage.googleapis.com/v0/b/eetha-37cb1/o/images%2F21f182f6-d75f-4d53-b879-a95969f46fca.png?alt=media&token=081b884e-6b86-4757-8e69-ee303535e1ff",
+      "prompt": "Create an image of the girl happily drawing at a small desk in her bedroom, surrounded by colorful crayons and paper., The girl is an 8-year-old Hispanic with long brown hair, wearing a pink pajama set. She looks focused and content.",
+      "step": "Doing something I enjoy, like drawing or reading, can help me feel better."
+    },
+    {
+      "audio": "https://firebasestorage.googleapis.com/v0/b/eetha-37cb1/o/audio%2F83033b10-c5f2-46d9-9d29-83069986862b.mp3?alt=media&token=3e10a654-53dc-4c88-b629-03db0598f624",
+      "image": "https://firebasestorage.googleapis.com/v0/b/eetha-37cb1/o/images%2F12348029-a865-4bcf-9516-812b61a2c1a3.png?alt=media&token=5d77ced8-9b6e-4460-b97b-cc67936399d4",
+      "prompt": "Create an image of the girl smiling and holding up her drawing to show her mother, while sunlight pours through the window, creating a warm, peaceful atmosphere., The girl is an 8-year-old Hispanic with long brown hair, wearing a pink pajama set. Her mother stands nearby with a proud smile, wearing a light blue blouse.",
+      "step": "When I use coping skills, I start to feel better, and soon the sadness goes away."
+    },
+    {
+      "audio": "https://firebasestorage.googleapis.com/v0/b/eetha-37cb1/o/audio%2Ff1813718-0a83-416d-be12-ba2c1db5195e.mp3?alt=media&token=92a272aa-1fdc-4d8f-9c59-52d9f128b227",
+      "image": "https://firebasestorage.googleapis.com/v0/b/eetha-37cb1/o/images%2Fc5be6fe2-62c0-4a83-81e7-c0fc9d1fc461.png?alt=media&token=b13bd916-8e19-4548-b24c-8874acad7249",
+      "prompt": "Create an image of the girl outside, playing in the garden with her dog under a bright blue sky, showing joy and strength., The girl is an 8-year-old Hispanic with long brown hair, now wearing jeans and a bright yellow t-shirt, looking joyful and energetic.",
+      "step": "Learning how to cope with sadness makes me stronger and happier."
+    }
+  ],
+  "timeStamp": "2025-03-12T09:26:21Z",
+  "title": "coping skills: sad"
+}

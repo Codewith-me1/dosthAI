@@ -9,11 +9,12 @@ interface CardProps {
   rating: number;
   category: string;
   type: 'story' | 'activity';
+  onClick?: () => void;
 }
 
-const Card: React.FC<CardProps> = ({ title, image, rating, type }) => {
+const Card: React.FC<CardProps> = ({ title, image, rating, type, onClick }) => {
   return (  
-    <div className="w-full max-w-[20rem] cursor-pointer">
+    <div className="w-full max-w-[20rem] cursor-pointer" onClick={onClick}>
       <div className="relative w-full rounded-xl overflow-hidden bg-white">
         <Image
           src={image}

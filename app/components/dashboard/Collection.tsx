@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Search, Plus, Star } from 'lucide-react';
 import Card from './Card';
 import { Button } from '../ui/button';
+import VideoPopup from './VideoPopup';
+import AssessmentCard from './AssessmentCard';
 
 interface StoryItem {
   id: string;
@@ -19,6 +21,12 @@ type UserRole = 'student' | 'bcba';
 const Collection = () => {
   const [userRole, setUserRole] = useState<UserRole>('student');
   
+  // Video popup state
+  const [videoOpen, setVideoOpen] = useState(false);
+  const [videoUrl, setVideoUrl] = useState('');
+  const [videoTitle, setVideoTitle] = useState('');
+  const [videoDescription, setVideoDescription] = useState('');
+
   const items: StoryItem[] = [
     {
       id: '1',
@@ -69,8 +77,21 @@ const Collection = () => {
     'Intraverbal'
   ];
 
+
+
+
+  // Handler for card click
+  const handleCardClick = (item: StoryItem) => {
+    // Replace with actual video URL and description as needed
+    setVideoUrl('/sampleVideo.mp4');
+    setVideoTitle(item.title);
+    setVideoDescription('This is a sample description for the video.');
+    setVideoOpen(true);
+  };
+
   return (
     <div className="w-full max-w-[120rem] mx-auto px-4 sm:px-6 lg:px-8">
+      
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
        
@@ -103,6 +124,7 @@ const Collection = () => {
               rating={item.rating}
               category={item.type}
               type={item.type}
+              onClick={() => handleCardClick(item)}
             />
           ))}
         </div>
@@ -121,6 +143,7 @@ const Collection = () => {
               rating={item.rating}
               category={item.type}
               type={item.type}
+              onClick={() => handleCardClick(item)}
             />
           ))}
         </div>
@@ -129,50 +152,18 @@ const Collection = () => {
       {/* Cognition Assessments Section - Only visible for BCBA */}
       {userRole === 'bcba' && (
         <div className="mb-8">
-          <h2 className="text-2xl font-semibold text-[#6100FF] mb-2">Create Cognition Assessments</h2>
-          <p className="text-gray-600 text-sm mb-4">
-            Create cognition assessment supporting cards for all levels and types
-          </p>
-          
-          {/* Assessment Types */}
-          <div className="flex flex-wrap gap-2 mb-6">
-            {assessmentTypes.map((type) => (
-              <span
-                key={type}
-                className="px-4 py-2 bg-amber-50 text-amber-800 rounded-full text-sm"
-              >
-                {type}
-              </span>
-            ))}
-          </div>
-
-          <Button className="px-6 py-2 border-2 border-[#6100FF] text-[#6100FF] bg-transparent hover:bg-purple-50">
-            Create Assessment
-          </Button>
-
-          {/* Level 1 Section */}
-          <div className="mt-8">
-            <h3 className="text-lg font-semibold mb-4">Level 1 - Imitation Skills</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {/* Image Card */}
-              <div className="relative group">
-                <img
-                  src="/placeholder-chair.jpg"
-                  alt="Chair"
-                  className="w-full aspect-square object-cover rounded-lg"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all rounded-lg" />
-              </div>
-            </div>
-            <div className="flex items-center gap-4 mt-4">
-              <div className="flex items-center gap-2">
-                <Star className="h-4 w-4 text-yellow-500 fill-current" />
-                <span className="text-sm text-gray-600">23</span>
-              </div>
-              <span className="text-sm text-[#6100FF] font-medium">Level 01</span>
-              <span className="text-sm text-gray-600">Motor Imitation</span>
-            </div>
-            <p className="text-sm text-gray-600 mt-2">Chair and stool combination</p>
+          <h2 className="text-2xl font-semibold text-[#6100FF] mb-2">Cognition Assessments</h2>
+          <div className="flex flex-wrap gap-6 mt-6">
+            <AssessmentCard
+              title="Level 1 - Imitation Skills"
+              images={['/chair1.jpg', '/chair2.jpg', '/chair3.jpg', '/chair4.jpg']}
+              level="Level 01"
+              type="Motor Imitation"
+              description="Chair and stool combination"
+              rating={4}
+              likes={23}
+              views={1}
+            />
           </div>
         </div>
       )}
