@@ -328,6 +328,7 @@ useEffect(() => {
             {items.map((item) => (
               <SwiperSlide className='max-w-[20rem]'  key={item.id}>
                   <Card
+                  author='BCBA'
                     key={String(item.id)}
                     id={String(item.id)}
                     title={item.title}
@@ -552,15 +553,7 @@ useEffect(() => {
 
       {/* Explore All Section */}
       <div>
-        <div className="flex items-center justify-between mb-8">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search"
-              className="px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent w-64"
-            />
-          </div>
-        </div>
+      
 
         <Tabs defaultValue="explore" className="w-full">
           <TabsList className="flex space-x-4 mb-8 bg-transparent">

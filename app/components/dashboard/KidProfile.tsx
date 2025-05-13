@@ -1,6 +1,10 @@
-import React from 'react';
+"use client";
+
+import React, { useState } from 'react';
 import { Plus, Sun, Moon, Heart, Users, Clock } from 'lucide-react';
 import Routine from './Routine';
+import CreateAssessment from '@/app/components/dashboard/CreateAssessment';
+
 
 interface KidProfileProps {
   name: string;
@@ -9,6 +13,7 @@ interface KidProfileProps {
 }
 
 const KidProfile: React.FC<KidProfileProps> = ({ name, age, role }) => {
+  const [showCreateAssessment, setShowCreateAssessment] = useState(false);
   const routines = [
     { id: 'morning', title: 'Morning Routine', icon: <Sun className="w-5 h-5 text-purple-600" /> },
     { id: 'evening', title: 'Evening Routine', icon: <Moon className="w-5 h-5 text-purple-600" /> },
@@ -25,6 +30,12 @@ const KidProfile: React.FC<KidProfileProps> = ({ name, age, role }) => {
   ];
 
   return (
+    <div>
+      
+      {showCreateAssessment ? (
+            <CreateAssessment kidName="test" onBack={() => setShowCreateAssessment(false)} />
+          ) : (
+            <> 
     <div className="p-3 max-w-6xl mb-0 pb-0">
       {/* Header */}
       <div className="flex p-3 justify-between items-center">
@@ -42,7 +53,10 @@ const KidProfile: React.FC<KidProfileProps> = ({ name, age, role }) => {
       <Routine/>
       {/* Cognition Assessments and Level 1 Section */}
       {(role === 'BCBA' || role === 'client') && (
-        <>
+
+<>
+
+
           {/* Cognition Assessments Section */}
           <div>
             <h2 className="text-xl text-purple-600 mb-2">Create Cognition Assessments</h2>
@@ -62,9 +76,15 @@ const KidProfile: React.FC<KidProfileProps> = ({ name, age, role }) => {
               ))}
             </div>
 
-            <button className="px-6 py-2 border-2 border-purple-600 text-purple-600 rounded-lg hover:bg-purple-50 transition-colors">
-              Create Assessment
-            </button>
+            <button
+                    className="px-6 py-2 border-2 border-purple-600 text-purple-700 font-bold rounded-lg hover:bg-purple-50 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-300"
+                    onClick={() => setShowCreateAssessment(true)}
+                    
+                  >
+                    Create Assessment
+                  </button>
+
+         
           </div>
 
           {/* Level 1 Section */}
@@ -98,7 +118,13 @@ const KidProfile: React.FC<KidProfileProps> = ({ name, age, role }) => {
         </>
       )}
     </div>
+    </>)}
+  </div>
+  
+  
+
   );
+
 };
 
 export default KidProfile;

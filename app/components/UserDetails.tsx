@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import KidsProfile, { KidsProfileData } from './KidsProfile';
+import { useRouter } from 'next/navigation';
 
 interface UserDetailsProps {
     onBack: () => void;
@@ -17,6 +18,8 @@ export interface UserDetailsData {
 }
 
 export default function UserDetails({ onBack, onSubmit }: UserDetailsProps) {
+    const router = useRouter()
+
     const [currentStep, setCurrentStep] = useState<'details' | 'kidsProfile'>('details');
     const [userDetailsData, setUserDetailsData] = useState<UserDetailsData>({
         role: '',
@@ -24,6 +27,12 @@ export default function UserDetails({ onBack, onSubmit }: UserDetailsProps) {
         country: ''
     });
 
+
+    const handleClick = () => {
+        router.push('/explore');
+      };
+    
+    
     const roles = [
         { id: 'parent', label: 'Parent' },
         { id: 'therapist', label: 'Therapist' },
@@ -197,8 +206,10 @@ export default function UserDetails({ onBack, onSubmit }: UserDetailsProps) {
                         <div className="flex gap-4 justify-end">
                           
                             <button
+                                onClick={()=>{handleClick()}}
                                 type="submit"
                                 className="w-1/2 bg-[#6000fe] text-white py-4 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+                                
                             >
                                 Next
                             </button>

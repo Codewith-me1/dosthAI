@@ -9,10 +9,11 @@ interface CardProps {
   rating: number;
   category: string;
   type: 'story' | 'activity';
+  author:'BCBA Created'| string;
   onClick?: () => void;
 }
 
-const Card: React.FC<CardProps> = ({ title, image, rating, type, onClick }) => {
+const Card: React.FC<CardProps> = ({ title, image, rating, type, onClick,author }) => {
   return (  
     <div className="w-full max-w-[20rem] cursor-pointer" onClick={onClick}>
       <div className="relative w-full rounded-xl overflow-hidden bg-white">
@@ -23,8 +24,12 @@ const Card: React.FC<CardProps> = ({ title, image, rating, type, onClick }) => {
           height={200}
           className="object-cover w-full h-[180px]"
         />
-        <div className='absolute bottom-0 left-0 right-0 flex justify-between items-center px-4 py-3'>
-          <div className="font-semibold text-[#2E74FF] px-3 py-1 rounded-full text-[13px] bg-white">
+      
+      </div>
+
+      <div className="mt-3">
+      <div className='flex justify-between items-center'>
+          <div className="font-semibold text-[#2E74FF]  py-2 rounded-full text-[13px] bg-white">
             {type.toUpperCase()}
           </div>
           <div className="flex space-x-2">
@@ -38,10 +43,8 @@ const Card: React.FC<CardProps> = ({ title, image, rating, type, onClick }) => {
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="mt-3">
-        <h3 className="text-sm font-medium mb-1.5 text-gray-800 line-clamp-2">{title}</h3>
+        <h3 className="text-md font-medium mb-1.5 text-gray-800 line-clamp-2">{title}</h3>
+        <h3 className='text-sm text-purple-300 '>{author}</h3>
         <div className="flex items-center mb-1">
           {[...Array(5)].map((_, index) => (
             <svg

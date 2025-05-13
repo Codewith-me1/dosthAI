@@ -1,3 +1,5 @@
+'use client'; // Assuming this is at the top of your file
+
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   X,
@@ -8,17 +10,14 @@ import {
   VolumeX,
   Loader,
   Heart,
-  ChevronLeft,
-  ChevronRight,
-  SkipForward,  // Assuming you had this or meant ChevronRight for next step
-  SkipBack,     // Assuming you had this or meant ChevronLeft for prev step
-  Repeat,       // For Loop
-  Maximize2,    // For Fullscreen
-  Minimize2     // For Exit Fullscreen
+  SkipForward,
+  SkipBack,
+  Repeat,
+  Maximize2,
+  Minimize2
 } from 'lucide-react';
-// import { BsSkipBackward } from 'react-icons/bs'; // This was in your provided code but not used, removing unless needed
 
-// --- Interfaces (remain the same as your provided code) ---
+// --- Interfaces ---
 interface StoryStep {
   audio: string;
   image: string;
@@ -38,21 +37,6 @@ interface StoryPopupProps {
   storyData: StoryData | null;
 }
 
-// --- CSS for highlighting (add this to your global CSS or a relevant stylesheet) ---
-/*
-.subtitle-word-highlight {
-  background-color: rgba(255, 255, 0, 0.75); // Yellow background
-  color: #111; // Darker text color for contrast
-  padding: 0.05em 0.15em; // Minimal padding
-  border-radius: 0.2em;
-  transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
-  display: inline-block; // Helps with consistent background application
-}
-.loop-active {
-  color: #34D399; // Example: Green color when loop is active
-}
-*/
-
 const StoryPopup: React.FC<StoryPopupProps> = ({ open, onClose, storyData }) => {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
@@ -61,21 +45,18 @@ const StoryPopup: React.FC<StoryPopupProps> = ({ open, onClose, storyData }) => 
   const [audioCurrentTime, setAudioCurrentTime] = useState(0);
   const [audioDuration, setAudioDuration] = useState(0);
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
-
   const [subtitleWords, setSubtitleWords] = useState<string[]>([]);
   const [activeSubtitleWordIndex, setActiveSubtitleWordIndex] = useState<number>(-1);
-
-  // --- State for Loop and Fullscreen ---
   const [isLooping, setIsLooping] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null); // Ref for the main popup container for fullscreen
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const currentStep = storyData?.story?.[currentStepIndex];
   const totalSteps = storyData?.story?.length ?? 0;
-  const title = storyData?.title ?? 'Story';
-  const thumbnailUrl = storyData?.thumbnailUrl ?? storyData?.story?.[0]?.image ?? 'https://via.placeholder.com/40';
+  const storyTitle = storyData?.title ?? 'Story';
+  const currentStepThumbnail = currentStep?.image ?? storyData?.thumbnailUrl ?? storyData?.story?.[0]?.image ?? 'https://via.placeholder.com/40';
 
   const formatTime = useCallback((timeInSeconds: number) => {
     if (isNaN(timeInSeconds) || timeInSeconds < 0 || !isFinite(timeInSeconds)) return '00:00';
@@ -101,17 +82,6 @@ const StoryPopup: React.FC<StoryPopupProps> = ({ open, onClose, storyData }) => 
   }, []);
 
   useEffect(() => {
-    if (currentStep?.step) {
-      setSubtitleWords(currentStep.step.split(' '));
-      setActiveSubtitleWordIndex(-1);
-    } else {
-      setSubtitleWords([]);
-      setActiveSubtitleWordIndex(-1);
-    }
-  }, [currentStep]);
-
-  // Update audio element's loop property
-  useEffect(() => {
     const audio = audioRef.current;
     if (audio) {
       audio.loop = isLooping;
@@ -121,27 +91,31 @@ const StoryPopup: React.FC<StoryPopupProps> = ({ open, onClose, storyData }) => 
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio || !open || !currentStep) return;
+
     const currentSource = audio.currentSrc;
     const newSource = currentStep.audio;
     setActiveSubtitleWordIndex(-1);
+
     if (currentSource !== newSource) {
       setIsAudioPlaying(false);
       setIsAudioLoading(true);
+      setAudioCurrentTime(0);
+      setAudioDuration(0);
       audio.src = newSource;
       audio.load();
     } else {
-      if (!isAudioPlaying && initialLoadComplete) playAudio();
+      if (!isAudioPlaying && initialLoadComplete) {
+        playAudio();
+      }
     }
-    return () => { if (audio) audio.pause(); };
   }, [open, currentStepIndex, currentStep?.audio, initialLoadComplete, playAudio]);
 
   useEffect(() => {
-    if (open && initialLoadComplete && !isAudioLoading && audioRef.current && audioRef.current.paused) {
+    if (open && initialLoadComplete && !isAudioLoading && audioRef.current && audioRef.current.paused && audioRef.current.readyState >= 3) {
       playAudio();
     }
   }, [open, initialLoadComplete, isAudioLoading, currentStepIndex, playAudio]);
 
-  // Fullscreen change listener
   useEffect(() => {
     const handleFullscreenChange = () => {
       setIsFullscreen(!!document.fullscreenElement);
@@ -150,14 +124,14 @@ const StoryPopup: React.FC<StoryPopupProps> = ({ open, onClose, storyData }) => 
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-
   useEffect(() => {
     const audio = audioRef.current;
     if (!open) {
       if (audio) {
         audio.pause();
         audio.currentTime = 0;
-        audio.loop = false; // Ensure loop is off on close
+        audio.src = '';
+        audio.loop = false;
       }
       setCurrentStepIndex(0);
       setIsAudioPlaying(false);
@@ -165,42 +139,28 @@ const StoryPopup: React.FC<StoryPopupProps> = ({ open, onClose, storyData }) => 
       setAudioCurrentTime(0);
       setAudioDuration(0);
       setInitialLoadComplete(false);
-      setActiveSubtitleWordIndex(-1);
-      setSubtitleWords([]);
-      setIsLooping(false); // Reset loop state
-      if (isFullscreen && document.fullscreenElement) { // Exit fullscreen if active
+      setIsLooping(false);
+      if (isFullscreen && document.fullscreenElement) {
         document.exitFullscreen().catch(err => console.error("Error exiting fullscreen on close:", err));
       }
-      setIsFullscreen(false); // Reset fullscreen state
+      setIsFullscreen(false);
     } else {
       setIsAudioLoading(true);
       setInitialLoadComplete(false);
-      setActiveSubtitleWordIndex(-1);
+      if (storyData?.story?.[currentStepIndex]?.audio && audio) {
+          if (audio.currentSrc !== storyData.story[currentStepIndex].audio) {
+            audio.src = storyData.story[currentStepIndex].audio;
+            audio.load();
+          }
+      }
     }
-  }, [open, isFullscreen]);
-
-
-  useEffect(() => {
-    if (!isAudioPlaying || audioDuration <= 0 || subtitleWords.length === 0) {
-      if (activeSubtitleWordIndex !== -1 && !isAudioPlaying) {/* Keep highlight on pause */ }
-      return;
-    }
-    const words = subtitleWords;
-    const numWords = words.length;
-    const estimatedTimePerWord = audioDuration / numWords;
-    let calculatedIndex = Math.floor(audioCurrentTime / estimatedTimePerWord);
-    calculatedIndex = Math.min(calculatedIndex, numWords - 1);
-    if (calculatedIndex !== activeSubtitleWordIndex) {
-      setActiveSubtitleWordIndex(calculatedIndex);
-    }
-  }, [audioCurrentTime, audioDuration, subtitleWords, isAudioPlaying, activeSubtitleWordIndex]);
+  }, [open, isFullscreen, storyData, currentStepIndex]); // Added currentStepIndex as storyData can change but index might be the same
 
   const handleAudioLoadedMetadata = useCallback(() => {
     const audio = audioRef.current;
     if (audio) {
       const duration = audio.duration;
       setAudioDuration(isFinite(duration) && duration > 0 ? duration : 0);
-      setActiveSubtitleWordIndex(-1);
     }
   }, []);
 
@@ -212,26 +172,22 @@ const StoryPopup: React.FC<StoryPopupProps> = ({ open, onClose, storyData }) => 
 
   const handleAudioEnded = useCallback(() => {
     setIsAudioPlaying(false);
-    setActiveSubtitleWordIndex(-1);
     setAudioCurrentTime(isLooping ? 0 : (audioDuration > 0 ? audioDuration : 0));
 
-    if (!isLooping) { // Only advance if not looping
-        if (currentStepIndex < totalSteps - 1) {
-            setCurrentStepIndex(prev => prev + 1);
-        } else {
-            onClose(); // Or loop entire story if desired
-        }
+    if (!isLooping) {
+      if (currentStepIndex < totalSteps - 1) {
+        setCurrentStepIndex(prev => prev + 1);
+      }
     } else {
-        // If looping, play again
-        if (audioRef.current) {
-            audioRef.current.currentTime = 0;
-            playAudio();
-        }
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0;
+        playAudio();
+      }
     }
-  }, [currentStepIndex, totalSteps, onClose, audioDuration, isLooping, playAudio]);
+  }, [currentStepIndex, totalSteps, audioDuration, isLooping, playAudio]); // Removed onClose from deps unless intended
 
   const handleAudioVolumeChange = useCallback(() => { if (audioRef.current) setIsAudioMuted(audioRef.current.muted); }, []);
-  const handleAudioCanPlay = useCallback(() => { setIsAudioLoading(false); setInitialLoadComplete(true); }, []);
+  const handleAudioCanPlay = useCallback(() => { setIsAudioLoading(false); setInitialLoadComplete(true);}, []);
   const handleAudioWaiting = useCallback(() => { setIsAudioLoading(true); setIsAudioPlaying(false); }, []);
   const handleAudioPlayingEvent = useCallback(() => { setIsAudioLoading(false); setIsAudioPlaying(true); }, []);
   const handleAudioError = useCallback((e: Event) => { console.error('Audio Error:', audioRef.current?.error, e); setIsAudioLoading(false); setIsAudioPlaying(false); setAudioDuration(0); }, []);
@@ -245,19 +201,24 @@ const StoryPopup: React.FC<StoryPopupProps> = ({ open, onClose, storyData }) => 
     audio.addEventListener('ended', handleAudioEnded);
     audio.addEventListener('volumechange', handleAudioVolumeChange);
     audio.addEventListener('canplay', handleAudioCanPlay);
+    audio.addEventListener('canplaythrough', handleAudioCanPlay);
     audio.addEventListener('waiting', handleAudioWaiting);
     audio.addEventListener('playing', handleAudioPlayingEvent);
     audio.addEventListener('error', handleAudioError);
     audio.addEventListener('pause', handleAudioPauseEvent);
+
     if (audio.readyState >= 1) handleAudioLoadedMetadata();
     if (audio.readyState >= 3) handleAudioCanPlay();
+
     setIsAudioMuted(audio.muted);
+
     return () => {
       audio.removeEventListener('loadedmetadata', handleAudioLoadedMetadata);
       audio.removeEventListener('timeupdate', handleAudioTimeUpdate);
       audio.removeEventListener('ended', handleAudioEnded);
       audio.removeEventListener('volumechange', handleAudioVolumeChange);
       audio.removeEventListener('canplay', handleAudioCanPlay);
+      audio.removeEventListener('canplaythrough', handleAudioCanPlay);
       audio.removeEventListener('waiting', handleAudioWaiting);
       audio.removeEventListener('playing', handleAudioPlayingEvent);
       audio.removeEventListener('error', handleAudioError);
@@ -267,117 +228,174 @@ const StoryPopup: React.FC<StoryPopupProps> = ({ open, onClose, storyData }) => 
 
   const handlePlayPause = useCallback(() => {
     const audio = audioRef.current;
-    if (!audio || (isAudioLoading && !initialLoadComplete && !audioDuration)) return;
+    if (!audio || (isAudioLoading && !initialLoadComplete && !audioDuration)) {
+        if (audio && audio.src && audio.readyState < 3) {
+            setIsAudioLoading(true);
+            audio.load();
+            audio.play().then(() => setIsAudioPlaying(true)).catch(() => {/* ignore */});
+        }
+        return;
+    }
     if (audio.paused) playAudio(); else audio.pause();
   }, [isAudioLoading, initialLoadComplete, audioDuration, playAudio]);
 
   const handleVolumeToggle = useCallback(() => { if (audioRef.current) audioRef.current.muted = !audioRef.current.muted; }, []);
   const handleNextStep = useCallback(() => { if (currentStepIndex < totalSteps - 1) setCurrentStepIndex(prev => prev + 1); }, [currentStepIndex, totalSteps]);
   const handlePreviousStep = useCallback(() => { if (currentStepIndex > 0) setCurrentStepIndex(prev => prev - 1); }, [currentStepIndex]);
-
-  // --- Loop and Fullscreen Handlers ---
-  const handleToggleLoop = useCallback(() => {
-    setIsLooping(prev => !prev);
-  }, []);
-
+  const handleThumbnailClick = useCallback((index: number) => setCurrentStepIndex(index), []);
+  const handleToggleLoop = useCallback(() => setIsLooping(prev => !prev), []);
   const handleToggleFullscreen = useCallback(() => {
     const elem = containerRef.current;
     if (!elem) return;
-
     if (!document.fullscreenElement) {
-      elem.requestFullscreen().catch(err => {
-        console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
-      });
+      elem.requestFullscreen().catch(err => console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`));
     } else {
       document.exitFullscreen();
     }
   }, []);
 
+  const renderPromptWithHighlight = (text?: string) => {
+    if (!text) return null;
+    const parts = text.split(/(short camping trip)/gi);
+    return parts.map((part, index) =>
+      part.toLowerCase() === "short camping trip" ? (
+        <span key={index} className="text-yellow-400">{part}</span>
+      ) : ( part )
+    );
+  };
 
-  if (!open || !storyData || !currentStep) return null;
-  const showInitialLoader = isAudioLoading && !initialLoadComplete && !audioDuration;
+  // ***** MOVED HOOK *****
+  // This useEffect is now placed BEFORE the early return.
+  useEffect(() => {
+    if (currentStep?.step) {
+      setSubtitleWords(currentStep.step.split(' '));
+      setActiveSubtitleWordIndex(-1); // Reset active word index when step changes
+    } else {
+      setSubtitleWords([]);
+      setActiveSubtitleWordIndex(-1);
+    }
+  }, [currentStep]); // Depends on currentStep
+
+  // Early return: All hooks above this line will always be called.
+  if (!open || !storyData || !currentStep) {
+    return null;
+  }
+
+  const showStepChangeLoader = isAudioLoading && !initialLoadComplete && !audioDuration;
 
   return (
-    <div ref={containerRef} className="fixed inset-0 z-50 bg-black flex flex-col text-white">
+    <div ref={containerRef} className="fixed inset-0 z-50 bg-black flex flex-col text-white font-sans">
       {/* Header */}
-      <div className="absolute top-0 left-0 right-0 z-40 flex items-center justify-between p-3 bg-gradient-to-b from-black/70 to-transparent">
-        <div className="flex items-center gap-4 overflow-hidden">
+      <div className="absolute top-0 left-0 right-0 z-30 flex items-center justify-between p-4 md:p-6 bg-gradient-to-b from-black/60 to-transparent">
+        <div className="flex items-center gap-3 overflow-hidden">
           <button onClick={onClose} aria-label="Back" className="flex-shrink-0 text-white hover:text-gray-300">
-            <ArrowLeft size={24} />
+            <ArrowLeft size={28} />
           </button>
-          <h2 className="text-base font-semibold truncate whitespace-nowrap">{title}</h2>
+          <h2 className="text-lg md:text-xl font-semibold truncate whitespace-nowrap">{storyTitle}</h2>
         </div>
         <button onClick={onClose} aria-label="Close" className="flex-shrink-0 text-white hover:text-gray-300">
-          <X size={24} />
+          <X size={28} />
         </button>
       </div>
 
-      {/* Image, Audio & Subtitle Container */}
-      <div className="relative flex-grow flex items-center justify-center overflow-hidden bg-black">
-        <img
-          key={currentStep.image}
-          src={currentStep.image}
-          alt={currentStep.step || `Step ${currentStepIndex + 1}`}
-          className="w-full h-full object-contain transition-opacity duration-300"
-        />
-        <audio ref={audioRef} muted={isAudioMuted} preload="metadata" />
-        {showInitialLoader && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/60 z-30">
-            <Loader size={48} className="animate-spin text-white/80" />
-          </div>
-        )}
-        {currentStep?.step && subtitleWords.length > 0 && (
-          <div className="absolute bottom-[10%] sm:bottom-[12%] md:bottom-[15%] lg:bottom-[18%] left-4 right-4 z-20 pointer-events-none">
-            <p className="text-center text-base sm:text-lg md:text-xl font-semibold text-white leading-relaxed px-2 py-1 rounded"
-               style={{ backgroundColor: 'rgba(0,0,0,0.6)', textShadow: '1px 1px 2px rgba(0,0,0,0.8)' }}>
-              {subtitleWords.map((word, index) => (
-                <span key={index} className={index === activeSubtitleWordIndex ? 'subtitle-word-highlight' : ''} >
-                  {word}{' '}
-                </span>
-              ))}
-            </p>
-          </div>
-        )}
-      </div>
+      {/* Main Content Area */}
+      <div className="flex-grow flex flex-col md:flex-row pt-16 md:pt-20 px-40 md:pb-24 overflow-hidden">
+        {/* Left Side: Image */}
+        <div className="relative w-full md:w-3/4 h-1/2 md:h-full flex items-center justify-center bg-black md:p-6 order-1 md:order-1">
+          <img
+            key={currentStep.image}
+            src={currentStep.image}
+            alt={currentStep.prompt || currentStep.step || `Step ${currentStepIndex + 1}`}
+            className="max-w-full max-h-full object-contain rounded-2xl transition-opacity duration-500 ease-in-out"
+          />
+          {showStepChangeLoader && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-10">
+              <Loader size={60} className="animate-spin text-white/90" />
+            </div>
+          )}
+          <audio ref={audioRef} muted={isAudioMuted} preload="metadata" className="hidden" />
+        </div>
 
+        {/* Right Side: Text & Thumbnails */}
+        <div className="w-full mt-14 md:w-2/4 h-1/2 md:h-full flex flex-col p-6 md:py-6 md:pr-10 md:pl-0 order-2 md:order-2 overflow-y-auto">
+          <div className="relative flex-grow flex flex-col">
+            <div
+              className="absolute inset-x-0 top-0 text-center text-5xl md:text-7xl font-bold text-white/5 select-none pointer-events-none leading-tight"
+              style={{ top: '5%'}}
+            >
+              Let's create a story
+            </div>
+            <div className="relative z-10">
+              <div className="text-2xl md:text-3xl text-white-400 mb-1 md:mb-2">
+                {currentStepIndex + 1}/{totalSteps}
+              </div>
+              <h3 className="text-2xl md:text-4xl lg:text-5xl font-bold leading-tight ">
+                {currentStep?.step && subtitleWords.length > 0 && (
+                  <>
+                    {subtitleWords.map((word, index) => (
+                      <span key={index} className={index === activeSubtitleWordIndex ? 'subtitle-word-highlight' : ''} >
+                        {word}{' '}
+                      </span>
+                    ))}
+                  </>
+                )}
+                {/* If you prefer to use the prompt field, you can use renderPromptWithHighlight here */}
+                {/* {renderPromptWithHighlight(currentStep.prompt || currentStep.step)} */}
+              </h3>
+            </div>
+          </div>
+        </div>
+      </div>
+      
       {/* Controls Footer */}
-      <div className="relative z-40 px-4 pb-3 pt-2 bg-gradient-to-t from-black/80 to-transparent">
-        <div className="relative h-1 bg-white/20 rounded mb-2">
+      <div className="absolute bottom-0 left-0 right-0 z-30 px-4 py-3 bg-gradient-to-t from-black/70 to-transparent">
+        {/* Progress Bar */}
+        <div className="relative h-1.5 bg-white/20 rounded-full mb-2 cursor-pointer group"
+             onClick={(e) => {
+               if (!audioRef.current || audioDuration <=0) return;
+               const rect = e.currentTarget.getBoundingClientRect();
+               const clickX = e.clientX - rect.left;
+               const newTime = (clickX / rect.width) * audioDuration;
+               audioRef.current.currentTime = newTime;
+             }}
+        >
           <div
-            className="absolute left-0 top-0 h-full bg-white rounded transition-all duration-100 ease-linear"
+            className="absolute left-0 top-0 h-full bg-white rounded-full transition-all duration-100 ease-linear group-hover:bg-yellow-400"
             style={{ width: `${audioDuration > 0 ? (audioCurrentTime / audioDuration) * 100 : 0}%` }}
           />
+          <div
+            className="absolute left-0 top-0 h-full w-3 h-3 -mt-1 rounded-full bg-white shadow-md transition-all duration-100 ease-linear transform group-hover:scale-125 group-hover:bg-yellow-400"
+            style={{ left: `calc(${audioDuration > 0 ? (audioCurrentTime / audioDuration) * 100 : 0}% - 6px)` }}
+          />
         </div>
-        <div className="flex justify-between text-xs text-gray-300 mb-2">
-          <span>{formatTime(audioCurrentTime)}</span>
-          <span>{formatTime(audioDuration)}</span>
-        </div>
-        <div className="flex items-center justify-between">
-          {/* Left side: Thumbnail */}
-          <div className="flex items-center gap-3 opacity-50 w-1/4 justify-start">
-            <img src={thumbnailUrl} alt="Thumbnail" className="w-8 h-8 rounded object-cover" />
+
+        <div className="flex items-center justify-between text-white">
+          {/* Left side: Thumbnail & Title */}
+          <div className="flex items-center gap-2 w-1/4 opacity-80">
+            <img src={currentStepThumbnail} alt="Current step thumbnail" className="w-10 h-10 rounded-md object-cover" />
+            <span className="text-sm font-medium truncate hidden sm:inline">{storyTitle}</span>
           </div>
 
-          {/* Center controls: Volume, SkipBack, Play/Pause, SkipForward */}
-          <div className="flex items-center gap-x-3 sm:gap-x-4 justify-center w-1/2">
-            <button onClick={handleVolumeToggle} aria-label={isAudioMuted ? 'Unmute' : 'Mute'} className="text-white hover:text-gray-300 p-1">
+          {/* Center controls */}
+          <div className="flex items-center gap-x-2 sm:gap-x-3 justify-center">
+            <button onClick={handleVolumeToggle} aria-label={isAudioMuted ? 'Unmute' : 'Mute'} className="p-2 hover:bg-white/10 rounded-full">
               {isAudioMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
             </button>
             <button
               onClick={handlePreviousStep}
               disabled={currentStepIndex === 0}
               aria-label="Previous Step"
-              className="text-white disabled:opacity-30 hover:text-gray-300 disabled:hover:text-white p-1"
+              className="p-2 hover:bg-white/10 rounded-full disabled:opacity-30 disabled:cursor-not-allowed"
             >
-              <SkipBack size={24} /> {/* Using Lucide's SkipBack */}
+              <SkipBack size={22} />
             </button>
             <button
               onClick={handlePlayPause}
-              disabled={showInitialLoader || (audioDuration <= 0 && !initialLoadComplete)}
-              className="bg-white/20 rounded-full p-2 disabled:opacity-50 hover:bg-white/30 mx-1"
+              disabled={(isAudioLoading && !audioDuration)}
+              className="bg-white text-black rounded-full p-2.5 sm:p-3 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed mx-1"
               aria-label={isAudioPlaying ? 'Pause' : 'Play'}
             >
-              {(isAudioLoading && !showInitialLoader && initialLoadComplete) ? (
+              {(isAudioLoading && !isAudioPlaying && !initialLoadComplete) ? ( // Show loader if truly loading new source and not yet playable
                 <Loader size={24} className="animate-spin" />
               ) : isAudioPlaying ? (
                 <Pause size={24} fill="currentColor" />
@@ -389,32 +407,31 @@ const StoryPopup: React.FC<StoryPopupProps> = ({ open, onClose, storyData }) => 
               onClick={handleNextStep}
               disabled={currentStepIndex === totalSteps - 1}
               aria-label="Next Step"
-              className="text-white disabled:opacity-30 hover:text-gray-300 disabled:hover:text-white p-1"
+              className="p-2 hover:bg-white/10 rounded-full disabled:opacity-30 disabled:cursor-not-allowed"
             >
-              <SkipForward size={24} /> {/* Using Lucide's SkipForward */}
+              <SkipForward size={22} />
             </button>
-            {/* Loop Button - moved to center right for balance */}
             <button
                 onClick={handleToggleLoop}
                 aria-label="Toggle Loop"
-                className={`text-white hover:text-gray-300 p-1 ${isLooping ? 'text-green-400' : ''}`} // Conditional styling for active loop
+                className={`p-2 hover:bg-white/10 rounded-full ${isLooping ? 'text-yellow-400' : ''}`}
             >
                 <Repeat size={20} />
             </button>
           </div>
           
           {/* Right side: Fullscreen, Save */}
-          <div className="flex items-center gap-x-3 sm:gap-x-4 justify-end w-1/4">
-             <button
+          <div className="flex items-center gap-x-2 sm:gap-x-3 justify-end w-1/4">
+            <button
                 onClick={handleToggleFullscreen}
                 aria-label={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
-                className="text-white hover:text-gray-300 p-1"
+                className="p-2 hover:bg-white/10 rounded-full"
             >
                 {isFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
             </button>
-            <button aria-label="Save Story" className="flex items-center gap-1.5 text-white hover:text-gray-300 p-1">
+            <button aria-label="Save Story" className="flex items-center gap-1.5 p-2 hover:bg-white/10 rounded-full">
               <Heart size={20} />
-              {/* <span className="hidden md:inline text-sm font-medium">Save</span> */}
+              <span className="text-sm font-medium hidden sm:inline">Save</span>
             </button>
           </div>
         </div>
@@ -424,3 +441,21 @@ const StoryPopup: React.FC<StoryPopupProps> = ({ open, onClose, storyData }) => 
 };
 
 export default StoryPopup;
+
+// Add this to your global CSS for a better scrollbar on thumbnails if needed:
+/*
+.custom-scrollbar::-webkit-scrollbar {
+  height: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+*/

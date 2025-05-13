@@ -113,13 +113,14 @@ const Collection = () => {
 
       {/* Stories Section */}
       <div className="mb-8">
-        <h2 className="text-sm font-medium text-gray-900 mb-4">Stories</h2>
+        <h2 className="text-2xl mt-10 font-poppins font-bold text-black-900 mb-4">Stories</h2>
         <div className="flex gap-4 sm:gap-6">
           {items.filter(item => item.type === 'story').map((item) => (
             <Card
               key={item.id}
               id={item.id}
               title={item.title}
+              author='BCBA'
               image={item.imageUrl}
               rating={item.rating}
               category={item.type}
@@ -132,7 +133,7 @@ const Collection = () => {
 
       {/* Activities Section */}
       <div className="mb-8">
-        <h2 className="text-sm font-medium text-gray-900 mb-4">Activities</h2>
+        <h2 className="text-2xl font-bold  text-gray-900 mb-4">Activities</h2>
         <div className="flex gap-4 sm:gap-6">
           {items.filter(item => item.type === 'activity').map((item) => (
             <Card
@@ -141,6 +142,7 @@ const Collection = () => {
               title={item.title}
               image={item.imageUrl}
               rating={item.rating}
+              author='BCBA'
               category={item.type}
               type={item.type}
               onClick={() => handleCardClick(item)}

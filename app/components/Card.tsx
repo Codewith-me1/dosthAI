@@ -10,7 +10,7 @@ interface CardProps {
   creator: string;
 }
 
-const Card = ({ title, imagePath, likes, views, rating, creator }: CardProps) => {
+const   Card = ({ title, imagePath, likes, views, rating, creator }: CardProps) => {
   const renderStars = () => {
     return Array.from({ length: 5 }).map((_, index) => (
       <FaStar

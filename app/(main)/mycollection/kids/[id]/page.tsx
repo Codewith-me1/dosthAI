@@ -47,12 +47,13 @@ interface StoryData {
 }
 
 // --- Mock Data/Functions ---
-function getKidById(id: string | string[]): KidInfo | null {
+function getKidById(id: string | string[]): KidInfo  {
   const kids: KidInfo[] = [
     { id: '1', name: 'John Doe', age: '8', role: 'student' },
     { id: '2', name: 'Alex Jones', age: '10', role: 'client' },
   ];
-  return kids.find(kid => kid.id === id) || null;
+  const kid =kids.find(kid => kid.id === id)
+  return  kid||   { id: '1', name: 'John Doe', age: '8', role: 'student' };
 }
 
 // Updated dummy cards - Assign dataKey and update activity card
@@ -89,14 +90,13 @@ const dummyCards: CardInfo[] = [
   },
 ];
 
-
 export default function KidPage() {
   const { id } = useParams();
   const kid = getKidById(id ?? "");
   const [storyPopupOpen, setStoryPopupOpen] = useState(false);
   const [currentStoryData, setCurrentStoryData] = useState<StoryData | null>(null);
   const [loadedStoryJson, setLoadedStoryJson] = useState<StoryData | null>(null);
-  const [loadedPaintStoryJson, setLoadedPaintStoryJson] = useState<StoryData | null>(null); // State for paintStory
+  const [loadedPaintStoryJson, setLoadedPaintStoryJson] = useState<StoryData | null>(null);
   const [showCreateAssessment, setShowCreateAssessment] = useState(false);
 
   useEffect(() => {
@@ -123,7 +123,7 @@ export default function KidPage() {
     } else {
       console.error("Failed to load or parse paintStory.json.");
     }
-  }, []); // Empty array ensures this runs only once on mount
+  }, []);
 
   const handleCardClick = (card: CardInfo) => {
     if (card.type === 'story' && card.dataKey === 'storyJson' && loadedStoryJson) {
@@ -166,19 +166,14 @@ export default function KidPage() {
                 <h2 className="text-xl font-semibold mb-4">My Cards</h2>
                 <div className="flex flex-wrap gap-6">
                   {dummyCards.map(card => (
-                    <Card key={card.id} {...card} onClick={() => handleCardClick(card)} />
+                    <Card key={card.id} {...card} author='BCBA' onClick={() => handleCardClick(card)} />
                   ))}
                 </div>
               </div>
               {/* Assessment Section */}
               <div className="mt-12">
                 <div className="flex justify-end mb-4">
-                  <button
-                    className="px-6 py-2 border-2 border-purple-600 text-purple-700 font-bold rounded-lg hover:bg-purple-50 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-300"
-                    onClick={() => setShowCreateAssessment(true)}
-                  >
-                    Create Assessment
-                  </button>
+                 
                 </div>
                 {/* You can add AssessmentCard(s) here if needed */}
               </div>

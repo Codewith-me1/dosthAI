@@ -5,8 +5,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Eye, EyeOff } from 'lucide-react';
 import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function SignIn() {
+    const router = useRouter()
     
     const [formData, setFormData] = useState({
         email: '',
@@ -14,6 +16,9 @@ export default function SignIn() {
     });
 
     
+    const handleClick = () => {
+        router.push('/explore');
+      };
     const [errors, setErrors] = useState({
         email: '',
         password: ''
@@ -157,16 +162,18 @@ export default function SignIn() {
 
                         {/* Forgot Password Link */}
                         <div className="text-right">
-                            <Link href="/forgot-password" className="text-[#2E74FF] font-medium hover:underline">
+                            <Link href="/forgotpassword" className="text-[#2E74FF] font-medium hover:underline">
                                 Forgot Password?
                             </Link>
                         </div>
 
                         {/* Submit Button */}
-                        <button
-                            type="submit"
-                            className="w-full bg-[#6000fe] text-white py-4 rounded-lg text-lg font-semibold hover:bg-purple-700 transition-colors"
+                        <button 
+                            onClick={()=>{handleClick()}}
+                            className=" w-full bg-[#6000fe]      text-white  py-4 rounded-lg text-lg font-semibold hover:bg-purple-700 transition-colors"
+                            
                         >
+
                             Sign In
                         </button>
                     </form>
