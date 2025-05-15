@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronDown, Database } from 'lucide-react';
@@ -13,6 +14,7 @@ interface HeaderProps {
 
 export default function Header({ username = 'Username', credits = 50 }: HeaderProps) {
     const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
+    const pathname = usePathname();
 
     return (
         <>
@@ -35,13 +37,17 @@ export default function Header({ username = 'Username', credits = 50 }: HeaderPr
                         <nav className="hidden md:flex items-center gap-6">
                             <Link 
                                 href="/explore" 
-                                className="text-[#6000fe] font-medium hover:opacity-80 transition-opacity"
+                                className={
+                                    `font-medium transition-opacity ${pathname === '/explore' ? 'text-[#7B2FF2]' : 'text-gray-600'}`
+                                }
                             >
                                 Explore
                             </Link>
                             <Link 
                                 href="/mycollection" 
-                                className="text-gray-600 font-medium hover:text-gray-900 transition-colors"
+                                className={
+                                    `font-medium hover:text-gray-900 transition-colors ${pathname === '/mycollection' ? 'text-[#7B2FF2]' : 'text-gray-600'}`
+                                }
                             >
                                 My Collections
                             </Link>

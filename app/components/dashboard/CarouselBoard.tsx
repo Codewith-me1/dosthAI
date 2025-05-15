@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useEffect } from 'react';
 import Image from 'next/image';
 import { TabsList, Tabs, TabsContent, TabsTrigger } from '../ui/tabs';
-import { Eye, Heart, Search, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { Eye, Heart, Search, ChevronLeft, ChevronRight, Plus, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import CreateCharacterModal from './CreateCharacterModal';
 import Card from './Card';
@@ -13,6 +13,7 @@ import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+import Link from 'next/link';
 
 interface CarouselItem {
   id: number;
@@ -278,12 +279,23 @@ useEffect(() => {
   const [activeCategory, setActiveCategory] = useState("stories");
   const [selectedOption, setSelectedOption] = useState("story");
   const [isCharacterModalOpen, setIsCharacterModalOpen] = useState(false);
+  const [customCharacters, setCustomCharacters] = useState<{ name: string; image: string }[]>([]);
+  const [selectedCharacterIndex, setSelectedCharacterIndex] = useState<number | null>(null);
 
   const filterCarouselsByCategory = (category: string) => {
     return dummyCarousels.filter(item => item.category === category);
   };
 
-  
+  // Default characters for Set Preference section
+  const defaultCharacters = [
+    { name: 'Anu & her mom', image: '/avatar/avatar1.jpg', source: 'default' },
+    { name: 'Raj & Friends', image: '/avatar/avatar2.jpg', source: 'default' },
+    { name: 'Karate Cat', image: '/avatar/avatar1.jpg', source: 'default' },
+  ];
+  const allCharacters = [
+    ...defaultCharacters,
+    ...customCharacters.map((char) => ({ ...char, source: 'custom' })),
+  ];
 
   const renderCarouselGrid = (category: string) => {
     const items = filterCarouselsByCategory(category);
@@ -474,16 +486,31 @@ useEffect(() => {
       <div className="storySection flex flex-col items-center px-4 md:px-0">
   {/* Search Box */}
   <div className="relative w-full max-w-3xl mb-8">
-    <div className="w-full">
+    <div className="w-full p-5 flex border-2 rounded-lg border-gray-200   ">
+      
+    <div className="flex items-center pointer-events-none">
+        <Search className="h-5 w-5 text-gray-400" />
+        
+    
+      </div>
       <input
         type="text"
         placeholder="example: create a story about how to walk my dog"
-        className="w-full px-12 py-5 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-700 text-base"
+        className="w-full px-5 py-5 rounded-lg   focus:outline-none  focus:ring-purple-500 focus:border-transparent text-gray-700 text-base"
       />
       {/* Search Icon */}
-      <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-        <Search className="h-5 w-5 text-gray-400" />
-      </div>
+      <Link href="/createStory" className=" flex items-center z-10">
+        <button
+          type="button"
+          className="flex items-center text-gray-400 justify-center h-10 w-10 ml-2 rounded-full hover:text-[#6100FF]  transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 "
+          aria-label="Go to Create Story"
+        >
+          <ArrowRight className="h-6 w-6" />
+        </button>
+      </Link>
+
+    
+
     </div>
   </div>
 
@@ -492,20 +519,17 @@ useEffect(() => {
     <h3 className="text-xl font-semibold text-gray-800 mb-4">Set Preference</h3>
     <div className="flex items-center gap-4">
       <div className="flex items-center gap-3">
-        <div className="flex flex-col items-center">
-          <Image src="/avatar/avatar1.jpg" alt="Avatar1" width={60} height={60} className="rounded-lg" />
-          <span className="text-xs mt-1 text-gray-600">Anu & her mom</span>
-        </div>
-        <div className="flex flex-col items-center">
-          <Image src="/avatar/avatar2.jpg" alt="Avatar2" width={60} height={60} className="rounded-lg" />
-          <span className="text-xs mt-1 text-gray-600">Raj & Friends</span>
-        </div>
-        <div className="flex flex-col items-center">
-          <Image src="/avatar/avatar1.jpg" alt="Avatar3" width={60} height={60} className="rounded-lg" />
-          <span className="text-xs mt-1 text-gray-600">Karate Cat</span>
-        </div>
+        {allCharacters.map((char, idx) => (
+          <div
+            key={idx}
+            onClick={() => setSelectedCharacterIndex(idx)}
+            className={`flex flex-col items-center cursor-pointer border-2 ${selectedCharacterIndex === idx ? 'border-[#6100FF]' : 'border-transparent'} rounded-lg p-1 transition-all`}
+          >
+            <Image src={char.image} alt={char.name} width={60} height={60} className="rounded-lg" />
+            <span className="text-xs mt-1 text-gray-600 text-center max-w-[70px] truncate">{char.name}</span>
+          </div>
+        ))}
       </div>
-      {/* Plus button */}
       <button
         onClick={() => setIsCharacterModalOpen(true)}
         className="w-14 h-14 mb-5 flex flex-col items-center justify-center rounded-full border-2 border-dashed border-gray-300 hover:border-gray-400 hover:text-gray-600 text-gray-400 transition-all duration-200"
@@ -519,6 +543,10 @@ useEffect(() => {
   <CreateCharacterModal
     isOpen={isCharacterModalOpen}
     onClose={() => setIsCharacterModalOpen(false)}
+    onSave={(character) => {
+      setCustomCharacters((prev) => [...prev, character]);
+      setIsCharacterModalOpen(false);
+    }}
   />
 
   {/* Sample Prompts */}

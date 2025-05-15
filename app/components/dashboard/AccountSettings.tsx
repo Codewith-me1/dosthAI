@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   LogOut,
   Edit2,
@@ -14,6 +14,9 @@ import {
   ChevronDown,
 } from "lucide-react";
 import Link from "next/link";
+import PaymentModal from './PaymentModal';
+import PlanPaymentModal from './PlanPaymentModal';
+import EditProfileModal from './EditProfileModal';
 
 const plans = [
   {
@@ -72,7 +75,58 @@ const coins = [
   },
 ];
 
+const demoPaymentMethods = [
+  { label: 'Visa **** 1234', icon: 'visa' },
+  { label: 'Mastercard **** 5678', icon: 'mastercard' },
+  { label: 'Amex **** 9012', icon: 'amex' },
+];
+
+interface ChangePaymentMethodModalProps {
+  open: boolean;
+  onClose: () => void;
+  onSelect: (label: string) => void;
+  selected: string;
+}
+
+function ChangePaymentMethodModal({ open, onClose, onSelect, selected }: ChangePaymentMethodModalProps) {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+      <div className="bg-white rounded-2xl shadow-lg p-6 w-full max-w-xs sm:max-w-sm mx-2 relative animate-fadeIn">
+        <button
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-700"
+          onClick={onClose}
+          aria-label="Close"
+        >
+          ×
+        </button>
+        <h2 className="text-lg font-bold mb-4">Select Payment Method</h2>
+        <div className="space-y-3">
+          {demoPaymentMethods.map((pm) => (
+            <button
+              key={pm.label}
+              onClick={() => { onSelect(pm.label); onClose(); }}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg border transition-colors ${selected === pm.label ? 'border-[#7B2FF2] bg-[#F3F0FF]' : 'border-gray-200 bg-white hover:border-[#7B2FF2]'} text-base`}
+            >
+              <span className="font-medium">{pm.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const AccountSettings: React.FC = () => {
+  const [paymentOpen, setPaymentOpen] = React.useState(false);
+  const [selectedCoin, setSelectedCoin] = React.useState<any>(null);
+  const [planPaymentOpen, setPlanPaymentOpen] = React.useState(false);
+  const [selectedPlan, setSelectedPlan] = React.useState<any>(null);
+  const [paymentMethod, setPaymentMethod] = useState('Visa **** 1234');
+  const [showChangePayment, setShowChangePayment] = useState(false);
+  const [username, setUsername] = useState('Username');
+  const [editProfileOpen, setEditProfileOpen] = useState(false);
+
   return (
     <div className="">
       <h1 className="text-2xl px-[10rem] sm:text-3xl  mt-8">
@@ -87,7 +141,7 @@ const AccountSettings: React.FC = () => {
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1 flex-wrap">
-                <span className=" text-xl truncate">Username</span>
+                <span className=" text-xl truncate">{username}</span>
                 <span className="flex items-center   gap-1 bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-xs font-semibold">
                   <Database className="w-6 text-[#FFC700]" />
                   20
@@ -99,6 +153,7 @@ const AccountSettings: React.FC = () => {
                 <Link
                   href="#"
                   className="text-[#2E74FF] text-xs font-medium flex items-center gap-1 ml-2 hover:underline "
+                  onClick={e => { e.preventDefault(); setEditProfileOpen(true); }}
                 >
                   <Pen className="w-4 h-4 " /> Edit Profile
                 </Link>
@@ -186,6 +241,10 @@ const AccountSettings: React.FC = () => {
                       ? "bg-[#6100FF] text-white border-[#6100FF]"
                       : "bg-white text-[#6100FF] border-[#6100FF]"
                   } transition-colors`}
+                  onClick={() => {
+                    setSelectedPlan(plan);
+                    setPlanPaymentOpen(true);
+                  }}
                 >
                   {plan.button}
                 </button>
@@ -199,11 +258,12 @@ const AccountSettings: React.FC = () => {
           <div className="flex items-center justify-between px-6 py-4 cursor-pointer hover:bg-gray-50">
             <div className="flex items-center gap-3">
               <CreditCard className="w-5 h-5 text-[#A259FF]" />
-              <span className="font-medium text-gray-800">Visa **** 1234</span>
+              <span className="font-medium text-gray-800">{paymentMethod}</span>
             </div>
             <Link
               href="#"
               className="text-[#6100FF] font-medium text-sm hover:underline"
+              onClick={e => { e.preventDefault(); setShowChangePayment(true); }}
             >
               Change Payment Method
             </Link>
@@ -249,6 +309,10 @@ const AccountSettings: React.FC = () => {
                       ? " text-[#6100FF] border-2 border-[#6100FF]"
                       : " text-[#6100FF] border-2 border-[#6100FF]"
                   } transition-colors`}
+                  onClick={() => {
+                    setSelectedCoin(coin);
+                    setPaymentOpen(true);
+                  }}
                 >
                   Buy
                 </button>
@@ -257,6 +321,34 @@ const AccountSettings: React.FC = () => {
           </div>
         </div>
       </div>
+      <PaymentModal
+        open={paymentOpen}
+        onClose={() => setPaymentOpen(false)}
+        label={selectedCoin?.label || ''}
+        amount={selectedCoin?.amount || 0}
+        price={selectedCoin?.price || ''}
+        paymentMethod={paymentMethod}
+      />
+      <PlanPaymentModal
+        open={planPaymentOpen}
+        onClose={() => setPlanPaymentOpen(false)}
+        planLabel={selectedPlan ? `Upgrade to ${selectedPlan.price}${selectedPlan.period}` : ''}
+        price={selectedPlan?.price || ''}
+        paymentMethod={paymentMethod}
+        buttonLabel={selectedPlan?.button || 'Upgrade'}
+      />
+      <ChangePaymentMethodModal
+        open={showChangePayment}
+        onClose={() => setShowChangePayment(false)}
+        onSelect={setPaymentMethod}
+        selected={paymentMethod}
+      />
+      <EditProfileModal
+        open={editProfileOpen}
+        onClose={() => setEditProfileOpen(false)}
+        username={username}
+        onSave={setUsername}
+      />
     </div>
   );
 };

@@ -134,7 +134,7 @@ const CardImagesPopup: React.FC<{
   const goRight = () => setCurrent((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-      <div className="relative w-full max-w-3xl mx-2 bg-transparent flex flex-col items-center">
+      <div className="relative w-full max-w-5xl mx-2 bg-transparent flex flex-col items-center">
         {/* Header */}
         <div className="w-full flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
@@ -148,13 +148,13 @@ const CardImagesPopup: React.FC<{
         {/* Images Row */}
         <div className="flex items-center justify-center w-full gap-6 mb-6">
           <button onClick={goLeft} className="p-2 text-white hover:bg-white/10 rounded-full"><ChevronLeft size={32} /></button>
-          <div className="flex gap-6 w-full max-w-2xl justify-center">
+          <div className="flex gap-6 w-full max-w-8xl justify-center">
             {images.map((img, idx) => (
               <img
                 key={idx}
                 src={img}
                 alt="Popup"
-                className={`w-48 h-64 object-cover rounded-2xl border-4 transition-all duration-200 ${idx === current ? 'border-yellow-400 scale-105 shadow-lg' : 'border-yellow-200 opacity-60'}`}
+                className={`w-54 h-100 md:w-[20rem] md:h-[30rem] object-cover rounded-2xl border-4 transition-all duration-200 ${idx === current ? 'border-yellow-400 scale-105 shadow-lg' : 'border-yellow-200 opacity-60'}`}
                 style={{ display: idx === current || images.length <= 3 ? 'block' : 'none' }}
               />
             ))}
@@ -162,9 +162,9 @@ const CardImagesPopup: React.FC<{
           <button onClick={goRight} className="p-2 text-white hover:bg-white/10 rounded-full"><ChevronRight size={32} /></button>
         </div>
         {/* Save Button */}
-        <div className="w-full flex justify-end">
-          <button className="flex items-center gap-2 px-6 py-2 bg-white text-gray-800 rounded-lg font-semibold shadow hover:bg-gray-100">
-            Save <Heart className="w-5 h-5 text-[#6100FF]" />
+        <div className="w-full flex justify-center md:justify-end">
+          <button className="flex items-center gap-2 px-6 py-2 border-2 border-white  text-white rounded-lg font-semibold shadow hover:bg-gray-100">
+            Save <Heart className="w-5 h-5 text-white" />
           </button>
         </div>
       </div>

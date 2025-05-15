@@ -47,7 +47,7 @@ const StoryPopup: React.FC<StoryPopupProps> = ({ open, onClose, storyData }) => 
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
   const [subtitleWords, setSubtitleWords] = useState<string[]>([]);
   const [activeSubtitleWordIndex, setActiveSubtitleWordIndex] = useState<number>(-1);
-  const [isLooping, setIsLooping] = useState(false);
+  const [isLooping, setIsLooping] = useState(false); // This now means "loop the entire story"
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -68,7 +68,7 @@ const StoryPopup: React.FC<StoryPopupProps> = ({ open, onClose, storyData }) => 
   const playAudio = useCallback(() => {
     const audio = audioRef.current;
     if (audio && audio.paused) {
-      if (audio.readyState >= 3) {
+      if (audio.readyState >= 3) { // HAVE_FUTURE_DATA or HAVE_ENOUGH_DATA
         audio.play()
           .then(() => setIsAudioPlaying(true))
           .catch((err) => {
@@ -76,17 +76,19 @@ const StoryPopup: React.FC<StoryPopupProps> = ({ open, onClose, storyData }) => 
             setIsAudioPlaying(false);
           });
       } else {
-        setIsAudioLoading(true);
+        setIsAudioLoading(true); // Still loading, show loading state
       }
     }
   }, []);
 
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (audio) {
-      audio.loop = isLooping;
-    }
-  }, [isLooping]);
+  // REMOVED: The useEffect that set audio.loop directly.
+  // The isLooping state will now be handled by handleAudioEnded for story-level looping.
+  // useEffect(() => {
+  //   const audio = audioRef.current;
+  //   if (audio) {
+  //     audio.loop = isLooping; // This made individual tracks loop
+  //   }
+  // }, [isLooping]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -102,19 +104,22 @@ const StoryPopup: React.FC<StoryPopupProps> = ({ open, onClose, storyData }) => 
       setAudioCurrentTime(0);
       setAudioDuration(0);
       audio.src = newSource;
-      audio.load();
+      audio.load(); // This will trigger 'canplay' or 'canplaythrough'
     } else {
-      if (!isAudioPlaying && initialLoadComplete) {
+      // Source is the same, check if it should play
+      if (!isAudioPlaying && initialLoadComplete && audio.paused && audio.readyState >= 3) {
         playAudio();
       }
     }
-  }, [open, currentStepIndex, currentStep?.audio, initialLoadComplete, playAudio]);
+  }, [open, currentStepIndex, currentStep?.audio, initialLoadComplete, playAudio]); // Added currentStep?.audio
 
   useEffect(() => {
+    // This effect tries to play audio once it's ready, especially after a step change
+    // or when the popup opens and initial content is loaded.
     if (open && initialLoadComplete && !isAudioLoading && audioRef.current && audioRef.current.paused && audioRef.current.readyState >= 3) {
       playAudio();
     }
-  }, [open, initialLoadComplete, isAudioLoading, currentStepIndex, playAudio]);
+  }, [open, initialLoadComplete, isAudioLoading, currentStepIndex, playAudio]); // currentStepIndex ensures it re-evaluates on step change
 
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -130,8 +135,8 @@ const StoryPopup: React.FC<StoryPopupProps> = ({ open, onClose, storyData }) => 
       if (audio) {
         audio.pause();
         audio.currentTime = 0;
-        audio.src = '';
-        audio.loop = false;
+        // audio.src = ''; // Clearing src can sometimes cause issues if not handled carefully; resetting on open is safer
+        // audio.loop = false; // No longer needed as we removed the direct loop effect
       }
       setCurrentStepIndex(0);
       setIsAudioPlaying(false);
@@ -139,22 +144,28 @@ const StoryPopup: React.FC<StoryPopupProps> = ({ open, onClose, storyData }) => 
       setAudioCurrentTime(0);
       setAudioDuration(0);
       setInitialLoadComplete(false);
-      setIsLooping(false);
+      // setIsLooping(false); // Optionally reset loop state on close
       if (isFullscreen && document.fullscreenElement) {
         document.exitFullscreen().catch(err => console.error("Error exiting fullscreen on close:", err));
       }
       setIsFullscreen(false);
     } else {
+      // When popup opens, ensure the correct audio for the currentStepIndex is loaded
       setIsAudioLoading(true);
-      setInitialLoadComplete(false);
+      setInitialLoadComplete(false); // Reset this to ensure loading indicators show correctly
       if (storyData?.story?.[currentStepIndex]?.audio && audio) {
-          if (audio.currentSrc !== storyData.story[currentStepIndex].audio) {
-            audio.src = storyData.story[currentStepIndex].audio;
-            audio.load();
-          }
+          // If the current src is not what it should be for the current step, update it
+          // This also helps if storyData itself changes while the popup is open.
+        const expectedSrc = storyData.story[currentStepIndex].audio;
+        if (audio.currentSrc !== expectedSrc || audio.src === '') {
+          audio.src = expectedSrc;
+          audio.load();
+        } else if (audio.paused && audio.readyState >=3) { // If src is correct but paused
+            playAudio();
+        }
       }
     }
-  }, [open, isFullscreen, storyData, currentStepIndex]); // Added currentStepIndex as storyData can change but index might be the same
+  }, [open, isFullscreen, storyData, currentStepIndex, playAudio]);
 
   const handleAudioLoadedMetadata = useCallback(() => {
     const audio = audioRef.current;
@@ -170,21 +181,27 @@ const StoryPopup: React.FC<StoryPopupProps> = ({ open, onClose, storyData }) => 
     }
   }, []);
 
+  // --- MODIFIED ---
   const handleAudioEnded = useCallback(() => {
     setIsAudioPlaying(false);
-    setAudioCurrentTime(isLooping ? 0 : (audioDuration > 0 ? audioDuration : 0));
 
-    if (!isLooping) {
-      if (currentStepIndex < totalSteps - 1) {
-        setCurrentStepIndex(prev => prev + 1);
+    if (isLooping) { // Story loop is active
+      if (currentStepIndex === totalSteps - 1) { // If it's the last step of the story
+        setCurrentStepIndex(0); // Go back to the first step
+        // The useEffect watching currentStepIndex will handle loading and playing the audio for step 0
+      } else { // Not the last step, but story loop is on
+        setCurrentStepIndex(prev => prev + 1); // Go to the next step
       }
-    } else {
-      if (audioRef.current) {
-        audioRef.current.currentTime = 0;
-        playAudio();
+    } else { // Story loop is NOT active
+      if (currentStepIndex < totalSteps - 1) { // If not the last step
+        setCurrentStepIndex(prev => prev + 1); // Go to the next step
+      } else {
+        // It's the last step and story loop is off, so playback naturally ends.
+        // Set current time to duration to reflect it's finished.
+        setAudioCurrentTime(audioDuration > 0 ? audioDuration : 0);
       }
     }
-  }, [currentStepIndex, totalSteps, audioDuration, isLooping, playAudio]); // Removed onClose from deps unless intended
+  }, [currentStepIndex, totalSteps, isLooping, audioDuration]); // playAudio removed from deps as it's not directly called
 
   const handleAudioVolumeChange = useCallback(() => { if (audioRef.current) setIsAudioMuted(audioRef.current.muted); }, []);
   const handleAudioCanPlay = useCallback(() => { setIsAudioLoading(false); setInitialLoadComplete(true);}, []);
@@ -201,14 +218,15 @@ const StoryPopup: React.FC<StoryPopupProps> = ({ open, onClose, storyData }) => 
     audio.addEventListener('ended', handleAudioEnded);
     audio.addEventListener('volumechange', handleAudioVolumeChange);
     audio.addEventListener('canplay', handleAudioCanPlay);
-    audio.addEventListener('canplaythrough', handleAudioCanPlay);
+    audio.addEventListener('canplaythrough', handleAudioCanPlay); // Also treat as canplay
     audio.addEventListener('waiting', handleAudioWaiting);
     audio.addEventListener('playing', handleAudioPlayingEvent);
     audio.addEventListener('error', handleAudioError);
     audio.addEventListener('pause', handleAudioPauseEvent);
 
-    if (audio.readyState >= 1) handleAudioLoadedMetadata();
-    if (audio.readyState >= 3) handleAudioCanPlay();
+    // Initial checks in case events were missed or state is already set
+    if (audio.readyState >= 1) handleAudioLoadedMetadata(); // HAVE_METADATA
+    if (audio.readyState >= 3) handleAudioCanPlay();     // HAVE_FUTURE_DATA / HAVE_ENOUGH_DATA
 
     setIsAudioMuted(audio.muted);
 
@@ -226,24 +244,36 @@ const StoryPopup: React.FC<StoryPopupProps> = ({ open, onClose, storyData }) => 
     };
   }, [handleAudioLoadedMetadata, handleAudioTimeUpdate, handleAudioEnded, handleAudioVolumeChange, handleAudioCanPlay, handleAudioWaiting, handleAudioPlayingEvent, handleAudioError, handleAudioPauseEvent]);
 
+
   const handlePlayPause = useCallback(() => {
     const audio = audioRef.current;
-    if (!audio || (isAudioLoading && !initialLoadComplete && !audioDuration)) {
-        if (audio && audio.src && audio.readyState < 3) {
-            setIsAudioLoading(true);
-            audio.load();
-            audio.play().then(() => setIsAudioPlaying(true)).catch(() => {/* ignore */});
+    if (!audio) return;
+
+    // If audio is loading (e.g., new src set) and not yet playable (no duration)
+    if (isAudioLoading && !initialLoadComplete && !audioDuration && audio.readyState < 3) {
+        // If there's a src and it's not ready, try to load/play again
+        if (audio.src) {
+            setIsAudioLoading(true); // Ensure loading state
+            audio.load(); // Attempt to load again
+            // Autoplay might be blocked, but playAudio will handle promise
+            playAudio();
         }
         return;
     }
-    if (audio.paused) playAudio(); else audio.pause();
+
+    if (audio.paused) {
+        playAudio();
+    } else {
+        audio.pause();
+    }
   }, [isAudioLoading, initialLoadComplete, audioDuration, playAudio]);
+
 
   const handleVolumeToggle = useCallback(() => { if (audioRef.current) audioRef.current.muted = !audioRef.current.muted; }, []);
   const handleNextStep = useCallback(() => { if (currentStepIndex < totalSteps - 1) setCurrentStepIndex(prev => prev + 1); }, [currentStepIndex, totalSteps]);
   const handlePreviousStep = useCallback(() => { if (currentStepIndex > 0) setCurrentStepIndex(prev => prev - 1); }, [currentStepIndex]);
   const handleThumbnailClick = useCallback((index: number) => setCurrentStepIndex(index), []);
-  const handleToggleLoop = useCallback(() => setIsLooping(prev => !prev), []);
+  const handleToggleLoop = useCallback(() => setIsLooping(prev => !prev), []); // This toggles the story loop flag
   const handleToggleFullscreen = useCallback(() => {
     const elem = containerRef.current;
     if (!elem) return;
@@ -264,19 +294,16 @@ const StoryPopup: React.FC<StoryPopupProps> = ({ open, onClose, storyData }) => 
     );
   };
 
-  // ***** MOVED HOOK *****
-  // This useEffect is now placed BEFORE the early return.
   useEffect(() => {
     if (currentStep?.step) {
       setSubtitleWords(currentStep.step.split(' '));
-      setActiveSubtitleWordIndex(-1); // Reset active word index when step changes
+      setActiveSubtitleWordIndex(-1);
     } else {
       setSubtitleWords([]);
       setActiveSubtitleWordIndex(-1);
     }
-  }, [currentStep]); // Depends on currentStep
+  }, [currentStep]);
 
-  // Early return: All hooks above this line will always be called.
   if (!open || !storyData || !currentStep) {
     return null;
   }
@@ -299,16 +326,16 @@ const StoryPopup: React.FC<StoryPopupProps> = ({ open, onClose, storyData }) => 
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-grow flex flex-col md:flex-row pt-16 md:pt-20 px-40 md:pb-24 overflow-hidden">
+      <div className="flex-grow flex flex-col md:flex-row pt-16 md:pt-20 px-4 md:px-8 lg:px-40 md:pb-24 overflow-hidden"> {/* Adjusted padding */}
         {/* Left Side: Image */}
-        <div className="relative w-full md:w-3/4 h-1/2 md:h-full flex items-center justify-center bg-black md:p-6 order-1 md:order-1">
+        <div className="relative w-full md:w-3/4 h-1/2 md:h-full flex items-center justify-center bg-black md:p-2 lg:p-6 order-1 md:order-1"> {/* Adjusted padding */}
           <img
-            key={currentStep.image}
+            key={currentStep.image} // Use a key to force re-render on image change if needed for transitions
             src={currentStep.image}
             alt={currentStep.prompt || currentStep.step || `Step ${currentStepIndex + 1}`}
-            className="max-w-full max-h-full object-contain rounded-2xl transition-opacity duration-500 ease-in-out"
+            className="max-w-full max-h-full object-contain rounded-lg md:rounded-2xl transition-opacity duration-500 ease-in-out" // Adjusted rounding
           />
-          {showStepChangeLoader && (
+          {showStepChangeLoader && ( // This loader is for when audio is loading but not yet ready (e.g. new step)
             <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-10">
               <Loader size={60} className="animate-spin text-white/90" />
             </div>
@@ -317,19 +344,19 @@ const StoryPopup: React.FC<StoryPopupProps> = ({ open, onClose, storyData }) => 
         </div>
 
         {/* Right Side: Text & Thumbnails */}
-        <div className="w-full mt-14 md:w-2/4 h-1/2 md:h-full flex flex-col p-6 md:py-6 md:pr-10 md:pl-0 order-2 md:order-2 overflow-y-auto">
+        <div className="w-full mt-4 md:mt-0 md:w-1/2 lg:w-2/4 h-1/2 md:h-full flex flex-col p-4 md:py-6 md:pr-4 lg:pr-10 md:pl-4 lg:pl-6 order-2 md:order-2 overflow-y-auto custom-scrollbar"> {/* Adjusted padding and added custom-scrollbar */}
           <div className="relative flex-grow flex flex-col">
             <div
-              className="absolute inset-x-0 top-0 text-center text-5xl md:text-7xl font-bold text-white/5 select-none pointer-events-none leading-tight"
-              style={{ top: '5%'}}
+              className="absolute inset-x-0 text-center text-4xl sm:text-5xl md:text-7xl font-bold text-white/5 select-none pointer-events-none leading-tight"
+              style={{ top: '5%'}} // Adjust as needed
             >
               Let's create a story
             </div>
-            <div className="relative z-10">
-              <div className="text-2xl md:text-3xl text-white-400 mb-1 md:mb-2">
+            <div className="relative z-10 mt-8 md:mt-16"> {/* Added margin-top to push content below bg text */}
+              <div className="text-xl md:text-2xl lg:text-3xl text-gray-400 mb-1 md:mb-2">
                 {currentStepIndex + 1}/{totalSteps}
               </div>
-              <h3 className="text-2xl md:text-4xl lg:text-5xl font-bold leading-tight ">
+              <h3 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold leading-tight text-white">
                 {currentStep?.step && subtitleWords.length > 0 && (
                   <>
                     {subtitleWords.map((word, index) => (
@@ -339,7 +366,6 @@ const StoryPopup: React.FC<StoryPopupProps> = ({ open, onClose, storyData }) => 
                     ))}
                   </>
                 )}
-                {/* If you prefer to use the prompt field, you can use renderPromptWithHighlight here */}
                 {/* {renderPromptWithHighlight(currentStep.prompt || currentStep.step)} */}
               </h3>
             </div>
@@ -349,89 +375,115 @@ const StoryPopup: React.FC<StoryPopupProps> = ({ open, onClose, storyData }) => 
       
       {/* Controls Footer */}
       <div className="absolute bottom-0 left-0 right-0 z-30 px-4 py-3 bg-gradient-to-t from-black/70 to-transparent">
-        {/* Progress Bar */}
-        <div className="relative h-1.5 bg-white/20 rounded-full mb-2 cursor-pointer group"
-             onClick={(e) => {
-               if (!audioRef.current || audioDuration <=0) return;
-               const rect = e.currentTarget.getBoundingClientRect();
-               const clickX = e.clientX - rect.left;
-               const newTime = (clickX / rect.width) * audioDuration;
-               audioRef.current.currentTime = newTime;
-             }}
+        {/* Progress Bar - Smooth Combined */}
+        <div
+          className="relative h-[6px] md:h-[8px] bg-white/20 rounded-full mb-2 cursor-pointer group" // Made slightly thinner on mobile
+          onClick={e => {
+            if (!storyData?.story?.length || !audioRef.current) return;
+            const rect = e.currentTarget.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const percent = clickX / rect.width;
+            const totalStorySteps = storyData.story.length;
+            
+            // Determine which step is clicked
+            const clickedStepIndex = Math.floor(percent * totalStorySteps);
+            
+            if (clickedStepIndex >= 0 && clickedStepIndex < totalStorySteps) {
+              if (currentStepIndex !== clickedStepIndex) {
+                setCurrentStepIndex(clickedStepIndex);
+                // Time will be reset by the useEffect that loads the new step's audio
+              } else {
+                // Clicked within the current step, so seek audio
+                if (audioDuration > 0) {
+                  const stepStartPercent = clickedStepIndex / totalStorySteps;
+                  const stepEndPercent = (clickedStepIndex + 1) / totalStorySteps;
+                  const percentWithinStep = (percent - stepStartPercent) / (stepEndPercent - stepStartPercent);
+                  audioRef.current.currentTime = percentWithinStep * audioDuration;
+                  setAudioCurrentTime(audioRef.current.currentTime); // Update UI immediately
+                }
+              }
+            }
+          }}
         >
           <div
-            className="absolute left-0 top-0 h-full bg-white rounded-full transition-all duration-100 ease-linear group-hover:bg-yellow-400"
-            style={{ width: `${audioDuration > 0 ? (audioCurrentTime / audioDuration) * 100 : 0}%` }}
-          />
-          <div
-            className="absolute left-0 top-0 h-full w-3 h-3 -mt-1 rounded-full bg-white shadow-md transition-all duration-100 ease-linear transform group-hover:scale-125 group-hover:bg-yellow-400"
-            style={{ left: `calc(${audioDuration > 0 ? (audioCurrentTime / audioDuration) * 100 : 0}% - 6px)` }}
+            className="absolute left-0 top-0 h-full bg-white group-hover:bg-yellow-400 rounded-full transition-all duration-150" // Faster transition for hover
+            style={{
+              width: (() => {
+                if (totalSteps === 0) return '0%';
+                let progress = currentStepIndex / totalSteps;
+                if (audioDuration > 0 && totalSteps > 0) {
+                  progress += (audioCurrentTime / audioDuration) / totalSteps;
+                }
+                return `${Math.min(progress, 1) * 100}%`;
+              })()
+            }}
           />
         </div>
 
         <div className="flex items-center justify-between text-white">
           {/* Left side: Thumbnail & Title */}
-          <div className="flex items-center gap-2 w-1/4 opacity-80">
-            <img src={currentStepThumbnail} alt="Current step thumbnail" className="w-10 h-10 rounded-md object-cover" />
-            <span className="text-sm font-medium truncate hidden sm:inline">{storyTitle}</span>
+          <div className="flex items-center gap-2 w-1/4 opacity-80 hover:opacity-100 transition-opacity">
+            <img src={currentStepThumbnail} alt="Current step thumbnail" className="w-8 h-8 md:w-10 md:h-10 rounded-md object-cover" />
+            <span className="text-xs sm:text-sm font-medium truncate hidden sm:inline">{storyTitle}</span>
           </div>
 
           {/* Center controls */}
-          <div className="flex items-center gap-x-2 sm:gap-x-3 justify-center">
-            <button onClick={handleVolumeToggle} aria-label={isAudioMuted ? 'Unmute' : 'Mute'} className="p-2 hover:bg-white/10 rounded-full">
-              {isAudioMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+          <div className="flex items-center gap-x-1 sm:gap-x-2 md:gap-x-3 justify-center">
+            <button onClick={handleVolumeToggle} aria-label={isAudioMuted ? 'Unmute' : 'Mute'} className="p-1.5 sm:p-2 hover:bg-white/10 rounded-full">
+              {isAudioMuted ? <VolumeX size={18} md-size={20} /> : <Volume2 size={18} md-size={20} />}
             </button>
             <button
               onClick={handlePreviousStep}
               disabled={currentStepIndex === 0}
               aria-label="Previous Step"
-              className="p-2 hover:bg-white/10 rounded-full disabled:opacity-30 disabled:cursor-not-allowed"
+              className="p-1.5 sm:p-2 hover:bg-white/10 rounded-full disabled:opacity-30 disabled:cursor-not-allowed"
             >
-              <SkipBack size={22} />
+              <SkipBack size={20} md-size={22} />
             </button>
             <button
               onClick={handlePlayPause}
-              disabled={(isAudioLoading && !audioDuration)}
-              className="bg-white text-black rounded-full p-2.5 sm:p-3 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed mx-1"
+              disabled={(isAudioLoading && !audioDuration && !initialLoadComplete)} // Disable if loading AND no duration AND not initially complete
+              className="bg-white text-black rounded-full p-2 sm:p-2.5 md:p-3 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed mx-0.5 sm:mx-1"
               aria-label={isAudioPlaying ? 'Pause' : 'Play'}
             >
-              {(isAudioLoading && !isAudioPlaying && !initialLoadComplete) ? ( // Show loader if truly loading new source and not yet playable
-                <Loader size={24} className="animate-spin" />
+              {/* More specific loader condition: shown when audio is actively trying to load and not yet playing */}
+              {(isAudioLoading && !isAudioPlaying && audioRef.current?.readyState && audioRef.current.readyState < 3) ? (
+                <Loader size={22} md-size={24} className="animate-spin" />
               ) : isAudioPlaying ? (
-                <Pause size={24} fill="currentColor" />
+                <Pause size={22} md-size={24} fill="currentColor" />
               ) : (
-                <Play size={24} fill="currentColor" />
+                <Play size={22} md-size={24} fill="currentColor" />
               )}
             </button>
             <button
               onClick={handleNextStep}
-              disabled={currentStepIndex === totalSteps - 1}
+              disabled={currentStepIndex === totalSteps - 1 && !isLooping} // Disable if last step AND not looping story
               aria-label="Next Step"
-              className="p-2 hover:bg-white/10 rounded-full disabled:opacity-30 disabled:cursor-not-allowed"
+              className="p-1.5 sm:p-2 hover:bg-white/10 rounded-full disabled:opacity-30 disabled:cursor-not-allowed"
             >
-              <SkipForward size={22} />
+              <SkipForward size={20} md-size={22} />
             </button>
             <button
                 onClick={handleToggleLoop}
-                aria-label="Toggle Loop"
-                className={`p-2 hover:bg-white/10 rounded-full ${isLooping ? 'text-yellow-400' : ''}`}
+                aria-label="Toggle Story Loop"
+                className={`p-1.5 sm:p-2 hover:bg-white/10 rounded-full ${isLooping ? 'text-yellow-400' : ''}`}
             >
-                <Repeat size={20} />
+                <Repeat size={18} md-size={20} />
             </button>
           </div>
           
           {/* Right side: Fullscreen, Save */}
-          <div className="flex items-center gap-x-2 sm:gap-x-3 justify-end w-1/4">
+          <div className="flex items-center gap-x-1 sm:gap-x-2 md:gap-x-3 justify-end w-1/4">
             <button
                 onClick={handleToggleFullscreen}
                 aria-label={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
-                className="p-2 hover:bg-white/10 rounded-full"
+                className="p-1.5 sm:p-2 hover:bg-white/10 rounded-full"
             >
-                {isFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
+                {isFullscreen ? <Minimize2 size={18} md-size={20} /> : <Maximize2 size={18} md-size={20} />}
             </button>
-            <button aria-label="Save Story" className="flex items-center gap-1.5 p-2 hover:bg-white/10 rounded-full">
-              <Heart size={20} />
-              <span className="text-sm font-medium hidden sm:inline">Save</span>
+            <button aria-label="Save Story" className="flex items-center gap-1 sm:gap-1.5 p-1.5 sm:p-2 hover:bg-white/10 rounded-full">
+              <Heart size={18} md-size={20} />
+              <span className="text-xs sm:text-sm font-medium hidden sm:inline">Save</span>
             </button>
           </div>
         </div>
@@ -445,17 +497,22 @@ export default StoryPopup;
 // Add this to your global CSS for a better scrollbar on thumbnails if needed:
 /*
 .custom-scrollbar::-webkit-scrollbar {
-  height: 8px;
+  width: 6px; // For vertical scrollbar
+  height: 6px; // For horizontal scrollbar
 }
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 10px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 10px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.4);
+}
+.subtitle-word-highlight {
+  color: #FACC15; // Tailwind yellow-400
+  // Add other styles like background if needed
 }
 */

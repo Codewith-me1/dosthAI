@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X } from 'lucide-react';
+import { ArrowRight, X } from 'lucide-react';
 import Image from 'next/image';
 
 interface CreateCharacterModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSave?: (character: { name: string; image: string }) => void;
 }
 
 const samplePrompts = [
@@ -21,6 +22,7 @@ const samplePrompts = [
 const CreateCharacterModal: React.FC<CreateCharacterModalProps> = ({
   isOpen,
   onClose,
+  onSave,
 }) => {
   const [step, setStep] = useState(1);
   const [prompt, setPrompt] = useState('');
@@ -59,12 +61,9 @@ const CreateCharacterModal: React.FC<CreateCharacterModalProps> = ({
       />
 
       {/* Modal Container */}
-      {/* Adjusted max-width and padding for different breakpoints */}
-      {/* Added max-height and overflow for smaller screens */}
       <div className="bg-white rounded-2xl w-full max-w-md md:max-w-2xl lg:max-w-5xl mx-auto relative shadow-xl max-h-[90vh] overflow-y-auto flex flex-col">
 
         {/* Close button */}
-        {/* Adjusted position slightly for smaller screens */}
         <button
           onClick={onClose}
           className="absolute right-3 top-3 sm:right-4 sm:top-4 text-gray-500 hover:text-gray-700 z-10 p-1 rounded-full hover:bg-gray-100" // Added padding and hover bg for easier clicking
@@ -74,8 +73,6 @@ const CreateCharacterModal: React.FC<CreateCharacterModalProps> = ({
         </button>
 
         {step === 1 ? (
-          // Step 1: Prompt Input
-          // Adjusted padding and text sizes
           <div className="p-4 sm:p-6 lg:p-8">
             {/* Header */}
             <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-1">
@@ -98,11 +95,12 @@ const CreateCharacterModal: React.FC<CreateCharacterModalProps> = ({
                 />
                 {prompt && (
                   <button
-                    onClick={() => setPrompt('')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    aria-label="Clear input" // Added for accessibility
+                    type="submit"
+                    onClick={handlePromptSubmit}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6100FF]  rounded-full p-1 transition-colors duration-200"
+                    aria-label="Go to next step"
                   >
-                    <X className="w-4 h-4" />
+                    <ArrowRight className="w-5 h-5" />
                   </button>
                 )}
               </div>
@@ -116,16 +114,13 @@ const CreateCharacterModal: React.FC<CreateCharacterModalProps> = ({
               <p className="text-xs text-gray-500 mb-3 sm:mb-4">
                 Choose a sample prompt to get started
               </p>
-              {/* Adjusted grid columns and gap for responsiveness */}
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
                 {samplePrompts.map((samplePrompt, index) => (
                   <button
                     key={index}
                     onClick={() => setPrompt(samplePrompt)}
-                    // Added text-left for better alignment if text wraps
                     className="flex items-center w-full text-left px-3 py-2 rounded-lg border border-gray-200 hover:border-purple-500 hover:bg-purple-50 transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-purple-300"
                   >
-                    {/* Added flex-shrink-0 to prevent star from shrinking */}
                     <span className="text-yellow-500 mr-2 flex-shrink-0">⭐</span>
                     <span className="text-sm text-gray-700">{samplePrompt}</span>
                   </button>
@@ -235,11 +230,19 @@ const CreateCharacterModal: React.FC<CreateCharacterModalProps> = ({
                   Try Again
                 </button>
                 <button
-                  onClick={onClose} 
-                  disabled={selectedCharacter === null} // Corrected disable logic
-                  className={`px-6 sm:px-8 py-2 rounded-lg text-sm font-medium flex items-center justify-center transition-colors duration-200 w-full sm:w-auto ${ // Make full width on small screens
-                    selectedCharacter !== null // Corrected condition check
-                      ? 'bg-[#6100ff] text-white font-semibold hover:bg-[#5100d6] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6100ff]' // Added focus state
+                  onClick={() => {
+                    if (selectedCharacter !== null && prompt.trim()) {
+                      onSave?.({ name: prompt, image: '/avatar/avatar1.jpg' });
+                      setStep(1);
+                      setPrompt('');
+                      setSelectedCharacter(null);
+                      onClose();
+                    }
+                  }}
+                  disabled={selectedCharacter === null}
+                  className={`px-6 sm:px-8 py-2 rounded-lg text-sm font-medium flex items-center justify-center transition-colors duration-200 w-full sm:w-auto ${
+                    selectedCharacter !== null
+                      ? 'bg-[#6100ff] text-white font-semibold hover:bg-[#5100d6] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6100ff]'
                       : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                   }`}
                 >
