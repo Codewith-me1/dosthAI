@@ -73,7 +73,7 @@ export default function KidsProfileList({ initialProfiles = [], onAddNewKid }: K
 
             <div className="mt-auto pt-8">
                 <button
-                    onClick={handleNext}
+                    
                     className="w-full max-w-xs bg-[#6000fe] text-white py-3 px-8 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
                 >
                     Next

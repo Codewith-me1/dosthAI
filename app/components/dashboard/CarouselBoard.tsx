@@ -265,7 +265,7 @@ const categories = {
 
 const CarouselBoard: React.FC = () => {
 
-  const words = ['activity', 'cards', 'story']; // You can add more words here
+  const words = ['activities', 'cards', 'stories']; // You can add more words here
 const [index, setIndex] = useState(0);
 
 useEffect(() => {
@@ -407,7 +407,7 @@ useEffect(() => {
       {/* Header Section */}
       <div className="text-center mb-8">
         <h1 className="text-4xl font-semibold mb-2">
-          Lets create a {""}
+          Lets create  {""}
           <AnimatePresence mode="wait">
         <motion.span
           key={words[index]}
