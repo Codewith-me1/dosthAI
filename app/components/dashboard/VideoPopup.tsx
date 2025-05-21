@@ -328,13 +328,32 @@ const StoryPopup: React.FC<StoryPopupProps> = ({ open, onClose, storyData }) => 
       {/* Main Content Area */}
       <div className="flex-grow flex flex-col md:flex-row pt-16 md:pt-20 px-4 md:px-8 lg:px-40 md:pb-24 overflow-hidden"> {/* Adjusted padding */}
         {/* Left Side: Image */}
-        <div className="relative w-full md:w-3/4 h-1/2 md:h-full flex items-center justify-center bg-black md:p-2 lg:p-6 order-1 md:order-1"> {/* Adjusted padding */}
+        <div className={`relative w-full h-full flex items-center justify-center ${isFullscreen ? 'bg-black' : ''}`}>
           <img
             key={currentStep.image} // Use a key to force re-render on image change if needed for transitions
             src={currentStep.image}
             alt={currentStep.prompt || currentStep.step || `Step ${currentStepIndex + 1}`}
-            className="max-w-full max-h-full object-contain rounded-lg md:rounded-2xl transition-opacity duration-500 ease-in-out" // Adjusted rounding
+            className={`object-contain w-full h-full ${isFullscreen ? 'rounded-none' : 'rounded-lg md:rounded-2xl'}`}
+            style={{ maxHeight: isFullscreen ? '100vh' : undefined }}
           />
+          {isFullscreen && (
+            <div className="absolute bottom-0 left-0 w-full px-4 pb-8 flex justify-center pointer-events-none">
+              <div className="bg-black/80 text-white text-xl md:text-2xl px-6 py-3 rounded-lg mb-4 pointer-events-auto"
+                   style={{maxWidth: '90vw'}}>
+                <span>
+                  {currentStep?.step && subtitleWords.length > 0 ? (
+                    subtitleWords.map((word, index) => (
+                      <span key={index} className={index === activeSubtitleWordIndex ? 'subtitle-word-highlight' : ''}>
+                        {word}{' '}
+                      </span>
+                    ))
+                  ) : (
+                    currentStep?.step
+                  )}
+                </span>
+              </div>
+            </div>
+          )}
           {showStepChangeLoader && ( // This loader is for when audio is loading but not yet ready (e.g. new step)
             <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-10">
               <Loader size={60} className="animate-spin text-white/90" />
