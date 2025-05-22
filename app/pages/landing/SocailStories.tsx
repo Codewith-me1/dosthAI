@@ -3,15 +3,13 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 
-// Define the structure for an image item
 interface StoryImage {
   id: number;
-  thumbnailUrl: string; // Path to the thumbnail image
-  fullUrl: string; // Path to the full-size image
+  thumbnailUrl: string;
+  fullUrl: string;
   alt: string;
 }
 
-// Sample data for the images - replace with your actual image data
 const storyImagesData: StoryImage[] = [
   {
     id: 1,
@@ -45,7 +43,7 @@ const storyImagesData: StoryImage[] = [
   },
 ];
 
-const IMAGE_CYCLE_DURATION = 5000; // 5 seconds
+const IMAGE_CYCLE_DURATION = 5000;
 
 const SocialStoriesSection: React.FC = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -53,22 +51,18 @@ const SocialStoriesSection: React.FC = () => {
 
   const selectedImage = storyImagesData[currentImageIndex];
 
-  // Function to go to the next image
   const nextImage = useCallback(() => {
     setCurrentImageIndex(
       (prevIndex) => (prevIndex + 1) % storyImagesData.length
     );
   }, []);
 
-  // Handle thumbnail click
   const handleThumbnailClick = (index: number) => {
     setCurrentImageIndex(index);
-    setIsTimerActive(false); // Stop timer on manual click
-    // Optionally, restart timer after a delay if desired
+    setIsTimerActive(false);
     setTimeout(() => setIsTimerActive(true), IMAGE_CYCLE_DURATION * 2);
   };
 
-  // Effect for automatic image cycling
   useEffect(() => {
     if (!isTimerActive) return;
 
@@ -76,7 +70,7 @@ const SocialStoriesSection: React.FC = () => {
       nextImage();
     }, IMAGE_CYCLE_DURATION);
 
-    return () => clearInterval(timer); // Cleanup timer on component unmount or when isTimerActive changes
+    return () => clearInterval(timer);
   }, [isTimerActive, nextImage]);
 
   return (
@@ -89,31 +83,27 @@ const SocialStoriesSection: React.FC = () => {
         </div>
 
         <div className="flex flex-col lg:flex-row gap-10 md:gap-16 justify-between ">
-          {/* Left Text Content */}
           <div className="flex-1 text-center lg:text-left">
             <p className="text-lg text-gray-600 mb-8">
               Personalized{" "}
-              <span className="text-purple-600 font-semibold">
+              <span className="text-[#6100FF] font-semibold">
                 social stories
               </span>
               , help individuals prepare for real world situations.
             </p>
-            <button className="bg-yellow-400 text-gray-800 font-semibold px-8 py-3 rounded-lg text-lg hover:bg-yellow-500 transition-colors shadow-md hover:shadow-lg">
+            <button className="bg-[#FFC700] text-[#6100FF] font-semibold px-8 py-3 rounded-lg text-lg hover:bg-yellow-500 transition-colors shadow-md hover:shadow-lg">
               Explore Community Stories
             </button>
           </div>
 
-          {/* Right Image Gallery */}
           <div className="flex-1  w-full md:ml-100">
             <div className="relative mb-4">
-              {/* "Plan a trip for us!" overlay text */}
               <div className="absolute top-0  -translate-x-1/3 -mt-6 md:-mt-8 z-20">
                 <div className="bg-[#DFCCFF] text-[#6100FF] text-xl md:text-3xl font-bold px-6 py-3 rounded-lg shadow-lg whitespace-nowrap">
                   Plan a trip for us!
                 </div>
               </div>
 
-              {/* Main Displayed Image */}
               <div className="relative rounded-lg w-full md:flex md:align-middle overflow-hidden ">
                 {selectedImage && (
                   <img
@@ -125,8 +115,6 @@ const SocialStoriesSection: React.FC = () => {
                 )}
               </div>
             </div>
-
-            {/* Thumbnails */}
           </div>
         </div>
         <div className="grid md:mt-[-12rem] w-full  lg:max-w-3xl mx-auto grid-cols-3 sm:grid-cols-5 gap-2 md:gap-3">

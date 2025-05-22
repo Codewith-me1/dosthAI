@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { use, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Check } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface PlanFeature {
   text: string;
@@ -43,6 +44,10 @@ const PricingCard: React.FC<PricingCardProps> = ({
 }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const router = useRouter();
+  const handleSignIn = () => {
+    router.push("/pages/signup");
+  };
 
   const cardClasses = `
     bg-[#F8FBFF] rounded-xl shadow-lg p-10 md:p-12 w-full
@@ -73,7 +78,14 @@ const PricingCard: React.FC<PricingCardProps> = ({
           <PlanFeatureItem key={index} text={feature.text} />
         ))}
       </ul>
-      <button className={buttonClasses}>{buttonText}</button>
+      <button
+        onClick={() => {
+          handleSignIn();
+        }}
+        className={buttonClasses}
+      >
+        {buttonText}
+      </button>
     </motion.div>
   );
 };
@@ -130,7 +142,7 @@ const plansData: PricingCardProps[] = [
 
 const PricingPlansSection: React.FC = () => {
   return (
-    <section className="py-12 md:py-20 ">
+    <section id="pricing" className="py-12 md:py-20 ">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 text-center mb-10 md:mb-16">
           Our Plans

@@ -1,46 +1,65 @@
-import React, { useState } from 'react';
-import { ArrowLeft, ArrowUp, Info, Search, ChevronDown, Heart, HeartIcon, Eye, X, ChevronLeft, ChevronRight } from 'lucide-react'; // Added Search and ChevronDown
+import React, { useState } from "react";
+import {
+  ArrowLeft,
+  ArrowUp,
+  Info,
+  Search,
+  ChevronDown,
+  Heart,
+  HeartIcon,
+  Eye,
+  X,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react"; // Added Search and ChevronDown
+import { useRouter } from "next/navigation";
 
 // --- DUMMY DATA ---
-const levels = ['Level 01', 'Level 02', 'Level 03'];
-const assessmentTypes = ['Assessment Type', 'Motor Imitation', 'Tacting', 'Listener Responding', 'Intraverbal'];
-const cardCounts = ['No of Cards', '1', '2', '3', '4', '5'];
+const levels = ["Level 01", "Level 02", "Level 03"];
+const assessmentTypes = [
+  "Assessment Type",
+  "Motor Imitation",
+  "Tacting",
+  "Listener Responding",
+  "Intraverbal",
+];
+const cardCounts = ["No of Cards", "1", "2", "3", "4", "5"];
 const samplePromptsData = [
-  'The Reluctant Alex',
-  'Virtual School',
-  'An Unexpected End',
-  'The Reluctant Alex', // Assuming duplicates are intentional as per your original code
-  'Virtual School',
+  "The Reluctant Alex",
+  "Virtual School",
+  "An Unexpected End",
+  "The Reluctant Alex", // Assuming duplicates are intentional as per your original code
+  "Virtual School",
 ];
 
 // Dummy data for pre-generated card packs
 const preGeneratedPacks = [
   {
-    level: 'Level 1 - Imitation Skills',
+    level: "Level 1 - Imitation Skills",
     cards: [
       {
-        id: '1a',
-        images: ['/demo1.jpg', '/demo2.jpg', '/demo3.jpg', '/demo4.jpg'], // Updated
-        title: 'Chair and stool combination',
-        tags: ['Level 01', 'Motor Imitation'],
+        id: "1a",
+        images: ["/demo1.jpg", "/demo2.jpg", "/demo3.jpg", "/demo4.jpg"], // Updated
+        title: "Chair and stool combination",
+        tags: ["Level 01", "Motor Imitation"],
         rating: 5,
         userCount: 23,
         sharedCount: 11,
       },
       {
-        id: '1b',
-        images: ['/demo1.jpg', '/demo2.jpg', '/demo3.jpg', '/demo4.jpg'], // Updated
-        title: '4 different types of playing balls',
-        tags: ['Level 01', 'Motor Imitation'],
+        id: "1b",
+        images: ["/demo1.jpg", "/demo2.jpg", "/demo3.jpg", "/demo4.jpg"], // Updated
+        title: "4 different types of playing balls",
+        tags: ["Level 01", "Motor Imitation"],
         rating: 4,
         userCount: 23,
         sharedCount: 11,
       },
       {
-        id: '1c',
-        images: ['/demo1.jpg', '/demo2.jpg', '/demo3.jpg', '/demo4.jpg'], // Updated
-        title: 'Adult and Kids imitating Clapping',
-        tags: ['Level 01', 'Motor Imitation'],
+        id: "1c",
+        images: ["/demo1.jpg", "/demo2.jpg", "/demo3.jpg", "/demo4.jpg"], // Updated
+        title: "Adult and Kids imitating Clapping",
+        tags: ["Level 01", "Motor Imitation"],
         rating: 5,
         userCount: 25,
         sharedCount: 11,
@@ -48,31 +67,31 @@ const preGeneratedPacks = [
     ],
   },
   {
-    level: 'Level 2 - Tacting',
+    level: "Level 2 - Tacting",
     cards: [
       {
-        id: '2a',
-        images: ['/demo1.jpg', '/demo2.jpg', '/demo3.jpg', '/demo4.jpg'], // Updated
-        title: 'Chair and stool combination',
-        tags: ['Level 01', 'Motor Imitation'],
+        id: "2a",
+        images: ["/demo1.jpg", "/demo2.jpg", "/demo3.jpg", "/demo4.jpg"], // Updated
+        title: "Chair and stool combination",
+        tags: ["Level 01", "Motor Imitation"],
         rating: 5,
         userCount: 23,
         sharedCount: 11,
       },
       {
-        id: '2b',
-        images: ['/demo1.jpg', '/demo2.jpg', '/demo3.jpg', '/demo4.jpg'], // Updated
-        title: '4 different types of playing balls',
-        tags: ['Level 01', 'Motor Imitation'],
+        id: "2b",
+        images: ["/demo1.jpg", "/demo2.jpg", "/demo3.jpg", "/demo4.jpg"], // Updated
+        title: "4 different types of playing balls",
+        tags: ["Level 01", "Motor Imitation"],
         rating: 4,
         userCount: 23,
         sharedCount: 11,
       },
       {
-        id: '2c',
-        images: ['/demo1.jpg', '/demo2.jpg', '/demo3.jpg', '/demo4.jpg'], // Updated
-        title: 'Adult and Kids imitating Clapping',
-        tags: ['Level 01', 'Motor Imitation'],
+        id: "2c",
+        images: ["/demo1.jpg", "/demo2.jpg", "/demo3.jpg", "/demo4.jpg"], // Updated
+        title: "Adult and Kids imitating Clapping",
+        tags: ["Level 01", "Motor Imitation"],
         rating: 5,
         userCount: 25,
         sharedCount: 11,
@@ -110,18 +129,26 @@ const CustomSelect: React.FC<{
       value={value}
       onChange={onChange}
       className={`appearance-none cursor-pointer px-4 py-2 pr-8 rounded-full  focus:outline-none border shadow-sm text-sm sm:text-base
-        ${primary
-          ? 'bg-[#F3F0FF] text-[#6100FF] border-[#A259FF]'
-          : 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200'
+        ${
+          primary
+            ? "bg-[#DFCCFF] text-[#6100FF] border-[#A259FF]"
+            : "bg-[#F3F8FF] text-gray-700 border-[#A8A8A8] hover:bg-gray-200"
         }`}
     >
-      {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+      {options.map((opt) => (
+        <option key={opt} value={opt}>
+          {opt}
+        </option>
+      ))}
     </select>
-    <ChevronDown className={`w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none ${primary ? 'text-[#6100FF]' : 'text-gray-500'}`} />
+    <ChevronDown
+      className={`w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none ${
+        primary ? "text-[#6100FF]" : "text-gray-500"
+      }`}
+    />
   </div>
 );
 
-// --- Popup Modal Component ---
 const CardImagesPopup: React.FC<{
   open: boolean;
   images: string[];
@@ -129,38 +156,70 @@ const CardImagesPopup: React.FC<{
   onClose: () => void;
 }> = ({ open, images, title, onClose }) => {
   const [current, setCurrent] = useState(0);
+  const imagesPerSlide = 3;
+
   if (!open) return null;
-  const goLeft = () => setCurrent((prev) => (prev === 0 ? images.length - 1 : prev - 1));
-  const goRight = () => setCurrent((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+
+  // Split images into chunks
+  const chunkedImages = [];
+  for (let i = 0; i < images.length; i += imagesPerSlide) {
+    chunkedImages.push(images.slice(i, i + imagesPerSlide));
+  }
+
+  const totalSlides = chunkedImages.length;
+
+  const goLeft = () =>
+    setCurrent((prev) => (prev === 0 ? totalSlides - 1 : prev - 1));
+  const goRight = () =>
+    setCurrent((prev) => (prev === totalSlides - 1 ? 0 : prev + 1));
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
       <div className="relative w-full max-w-5xl mx-2 bg-transparent flex flex-col items-center">
         {/* Header */}
         <div className="w-full flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <ArrowLeft className="w-6 h-6 text-white" onClick={onClose} role="button" />
+            <ArrowLeft
+              className="w-6 h-6 text-white"
+              onClick={onClose}
+              role="button"
+            />
             <span className="text-white text-lg font-semibold">{title}</span>
           </div>
-          <button onClick={onClose} className="text-white hover:text-gray-300 text-2xl">
+          <button
+            onClick={onClose}
+            className="text-white hover:text-gray-300 text-2xl"
+          >
             <X />
           </button>
         </div>
-        {/* Images Row */}
+
+        {/* Slide Controls & Cards */}
         <div className="flex items-center justify-center w-full gap-6 mb-6">
-          <button onClick={goLeft} className="p-2 text-white hover:bg-white/10 rounded-full"><ChevronLeft size={32} /></button>
-          <div className="flex gap-6 w-full max-w-8xl justify-center">
-            {images.map((img, idx) => (
+          <button
+            onClick={goLeft}
+            className="p-2 text-white hover:bg-white/10 rounded-full"
+          >
+            <ChevronLeft size={32} />
+          </button>
+          <div className="flex gap-4 w-full max-w-4xl justify-center flex-wrap">
+            {chunkedImages[current].map((img, idx) => (
               <img
                 key={idx}
                 src={img}
-                alt="Popup"
-                className={`w-54 h-100 md:w-[20rem] md:h-[30rem] object-cover rounded-2xl border-4 transition-all duration-200 ${idx === current ? 'border-yellow-400 scale-105 shadow-lg' : 'border-yellow-200 opacity-60'}`}
-                style={{ display: idx === current || images.length <= 3 ? 'block' : 'none' }}
+                alt={`Slide ${current + 1} - Image ${idx + 1}`}
+                className="w-[10rem] h-[15rem] object-cover rounded-2xl border-4 border-yellow-400 shadow-md"
               />
             ))}
           </div>
-          <button onClick={goRight} className="p-2 text-white hover:bg-white/10 rounded-full"><ChevronRight size={32} /></button>
+          <button
+            onClick={goRight}
+            className="p-2 text-white hover:bg-white/10 rounded-full"
+          >
+            <ChevronRight size={32} />
+          </button>
         </div>
+
         {/* Save Button */}
         <div className="w-full flex justify-center md:justify-end">
           <button className="flex items-center gap-2 px-6 py-2 border-2 border-white  text-white rounded-lg font-semibold shadow hover:bg-gray-100">
@@ -173,33 +232,56 @@ const CardImagesPopup: React.FC<{
 };
 
 // --- CardPackItem ---
-const CardPackItem: React.FC<CardPackItemProps & { onImageClick?: () => void }> = ({ images, title, tags, rating, userCount, sharedCount, onImageClick }) => (
-  <div className="rounded-lg overflow-hidden w-full sm:w-[calc(50%-0.5rem)] md:w-[calc(33.333%-0.666rem)] cursor-pointer" onClick={onImageClick}>
+const CardPackItem: React.FC<
+  CardPackItemProps & { onImageClick?: () => void }
+> = ({ images, title, tags, rating, userCount, sharedCount, onImageClick }) => (
+  <div
+    className="rounded-lg overflow-hidden w-full sm:w-[calc(50%-0.5rem)] md:w-[calc(33.333%-0.666rem)] cursor-pointer"
+    onClick={onImageClick}
+  >
     <div className="grid grid-cols-2 gap-0.5">
       {images.slice(0, 4).map((img, idx) => (
-        <img key={idx} src={img} alt={`${title} image ${idx + 1}`} className="w-full h-20 object-cover" />
+        <img
+          key={idx}
+          src={img}
+          alt={`${title} image ${idx + 1}`}
+          className="w-full h-20 object-cover"
+        />
       ))}
     </div>
-    <div className="flex  justify-end text-xs text-gray-500 gap-5">
-      <div className='conten flex items-center'>
-      <HeartIcon className='text-yellow-500 w-4 fill-yellow-500'/>
+    <div className="flex m-2  justify-end text-xs text-gray-500 gap-5">
+      <div className="conten flex items-center">
+        <HeartIcon className="text-yellow-500 w-4 fill-yellow-500" />
         <span>{userCount} </span>
-        </div>
-        <div className='conten flex items-center'>
-          <Eye className='text-yellow-500'/>
+      </div>
+      <div className="conten flex items-center">
+        <Eye className="text-yellow-500" />
         <span>{sharedCount} </span>
-        </div>
+      </div>
     </div>
     <div className="p-3">
       <div className="flex flex-wrap gap-1 mb-1">
-        {tags.map(tag => (
-          <span key={tag} className="text-xs bg-[#FFF4CC] text-purple-600 px-2 py-1 rounded-full font-medium">{tag}</span>
+        {tags.map((tag) => (
+          <span
+            key={tag}
+            className="text-xs bg-[#FFF4CC] text-purple-600 px-2 py-1 rounded-full font-medium"
+          >
+            {tag}
+          </span>
         ))}
       </div>
       <h4 className=" text-sm text-gray-800 mb-1 truncate">{title}</h4>
       <div className="flex items-center text-xs text-yellow-500 mb-1">
         {Array.from({ length: 5 }).map((_, i) => (
-          <svg key={i} className={`w-3 h-3 fill-current ${i < rating ? 'text-yellow-400' : 'text-gray-300'}`} viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 .5l2.939 5.455 6.572.955-4.756 4.635 1.123 6.545z"/></svg>
+          <svg
+            key={i}
+            className={`w-3 h-3 fill-current ${
+              i < rating ? "text-yellow-400" : "text-gray-300"
+            }`}
+            viewBox="0 0 20 20"
+          >
+            <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 .5l2.939 5.455 6.572.955-4.756 4.635 1.123 6.545z" />
+          </svg>
         ))}
       </div>
     </div>
@@ -207,16 +289,26 @@ const CardPackItem: React.FC<CardPackItemProps & { onImageClick?: () => void }> 
 );
 
 // --- Main Component ---
-const CreateAssessment: React.FC<CreateAssessmentProps> = ({ kidName = "John Doe", onBack }) => {
+const CreateAssessment: React.FC<CreateAssessmentProps> = ({
+  kidName = "John Doe",
+  onBack,
+}) => {
   const [level, setLevel] = useState(levels[0]);
   const [type, setType] = useState(assessmentTypes[0]);
   const [cardCount, setCardCount] = useState(cardCounts[0]);
-  const [prompt, setPrompt] = useState('');
-  const [selectedSamplePrompt, setSelectedSamplePrompt] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [prompt, setPrompt] = useState("");
+  const [selectedSamplePrompt, setSelectedSamplePrompt] = useState<
+    string | null
+  >(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const [popupImages, setPopupImages] = useState<string[] | null>(null);
-  const [popupTitle, setPopupTitle] = useState<string>('');
+  const [popupTitle, setPopupTitle] = useState<string>("");
+  const [selectedLevel, setSelectedLevel] = useState(levels[0]);
+  const [selectedAssessment, setSelectedAssessment] = useState(
+    assessmentTypes[0]
+  );
   const [popupOpen, setPopupOpen] = useState(false);
+  const router = useRouter();
 
   // --- Event Handlers ---
   const handleSamplePromptClick = (sp: string) => {
@@ -226,7 +318,13 @@ const CreateAssessment: React.FC<CreateAssessmentProps> = ({ kidName = "John Doe
 
   const handleSubmitPrompt = () => {
     if (prompt.trim()) {
-      console.log("Submitting prompt:", prompt, { level, type, cardCount });
+      const params = new URLSearchParams({
+        prompt,
+        cardCount,
+        assessmentType: type,
+        level,
+      });
+      router.push(`/createCards?${params.toString()}`);
     }
   };
 
@@ -247,32 +345,54 @@ const CreateAssessment: React.FC<CreateAssessmentProps> = ({ kidName = "John Doe
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <span className="text-xs text-gray-500">{kidName} / Create Assessment Cards</span>
+        <span className="text-xs text-gray-500">
+          {kidName} / Create Assessment Cards
+        </span>
       </div>
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6">
         Create Assessment - <span className="text-[#6100FF]">{kidName}</span>
       </h1>
-     
 
       {/* Preferences Section */}
       <div className="mb-8">
-        <span className="block text-[#A259FF] font-semibold text-sm mb-2">Set your preferences</span>
+        <span className="block text-[#A259FF] font-semibold text-sm mb-2">
+          Set your preferences
+        </span>
         <div className="flex flex-col sm:flex-row flex-wrap gap-3 items-start sm:items-center">
-          <CustomSelect value={level} onChange={e => setLevel(e.target.value)} options={levels} primary />
-          <CustomSelect value={type} onChange={e => setType(e.target.value)} options={assessmentTypes} />
-          <CustomSelect value={cardCount} onChange={e => setCardCount(e.target.value)} options={cardCounts} />
+          <CustomSelect
+            value={level}
+            onChange={(e) => setLevel(e.target.value)}
+            options={levels}
+            primary
+          />
+          <CustomSelect
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            options={assessmentTypes}
+          />
+          <CustomSelect
+            value={cardCount}
+            onChange={(e) => setCardCount(e.target.value)}
+            options={cardCounts}
+          />
         </div>
       </div>
 
       {/* Prompt Input Section */}
-      <div className="mb-8 p-1"> {/* Added small padding to prevent box shadow clipping */}
-        <p className="text-center text-sm text-gray-600 mb-1">Create your first cards, write a simple prompt! For example.</p>
-        <p className="text-center font-semibold text-gray-700 text-base mb-4">Create a cards with different chairs</p>
+      <div className="mb-8 p-1">
+        {" "}
+        {/* Added small padding to prevent box shadow clipping */}
+        <p className="text-center text-sm text-gray-600 mb-1">
+          Create your first cards, write a simple prompt! For example.
+        </p>
+        <p className="text-center font-semibold text-gray-700 text-base mb-4">
+          Create a cards with different chairs
+        </p>
         <div className="w-full max-w-2xl h-40 mx-auto flex-start flex items-center bg-white border border-gray-300 rounded-xl px-3 py-2.5 shadow-sm focus-within:ring-2 focus-within:ring-[#6100FF] focus-within:border-[#6100FF]">
           <input
             type="text"
             value={prompt}
-            onChange={e => setPrompt(e.target.value)}
+            onChange={(e) => setPrompt(e.target.value)}
             className="flex-1 bg-transparent outline-none text-gray-800 text-base sm:text-lg placeholder:text-gray-400"
             placeholder="example: create a story about how to walk my dog"
           />
@@ -289,13 +409,17 @@ const CreateAssessment: React.FC<CreateAssessmentProps> = ({ kidName = "John Doe
       </div>
 
       {/* Sample Prompts Section */}
-      <div className='border-1 border-[#D5D5D5] my-5'></div>
+      <div className="border-1 border-[#D5D5D5] my-5"></div>
       <div className="mb-10">
-         <div className="flex items-center gap-2 mb-3">
-            <div>
-                <h3 className="text-base font-semibold text-gray-800">Sample Prompts</h3>
-                <p className="text-xs text-gray-500">Choose a sample prompt to create a story</p>
-            </div>
+        <div className="flex items-center gap-2 mb-3">
+          <div>
+            <h3 className="text-base font-semibold text-gray-800">
+              Sample Prompts
+            </h3>
+            <p className="text-xs text-gray-500">
+              Choose a sample prompt to create a story
+            </p>
+          </div>
         </div>
         <div className="flex flex-wrap gap-2 sm:gap-3">
           {samplePromptsData.map((sp, idx) => (
@@ -303,24 +427,42 @@ const CreateAssessment: React.FC<CreateAssessmentProps> = ({ kidName = "John Doe
               key={idx}
               onClick={() => handleSamplePromptClick(sp)}
               className={`px-3 py-1.5 sm:px-4 sm:py-2  rounded-lg border text-xs sm:text-sm font-medium flex items-center gap-1.5 transition-all
-                ${selectedSamplePrompt === sp
-                  ? 'bg-[#F3F0FF] text-[#6100FF] border-[#6100FF] shadow-md'
-                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400 focus:bg-[#F3F0FF] focus:text-[#6100FF] focus:border-[#6100FF]'
+                ${
+                  selectedSamplePrompt === sp
+                    ? "bg-[#F3F0FF] text-[#6100FF] border-[#6100FF] shadow-md"
+                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400 focus:bg-[#F3F0FF] focus:text-[#6100FF] focus:border-[#6100FF]"
                 }`}
             >
-              <span className="text-base text-[#FFC700]">&#x275B;</span> {sp} <span className="text-base text-[#FFC700]">&#x275C;</span>
+              <span className="text-base text-[#FFC700]">&#x275B;</span> {sp}{" "}
+              <span className="text-base text-[#FFC700]">&#x275C;</span>
             </button>
           ))}
         </div>
       </div>
 
-       {/* Pre-generated Card Packs Section */}
-       <div className="mb-8">
-        <h2 className="text-xl font-semibold text-gray-800 mb-2">Select form Pre-generated card packs</h2>
+      {/* Pre-generated Card Packs Section */}
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold text-gray-800 mb-2">
+          Select form Pre-generated card packs
+        </h2>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
           <div className="flex flex-wrap gap-3 items-center">
-             <CustomSelect value={levels[0]} onChange={() => {}} options={levels} primary />
-             <CustomSelect value={assessmentTypes[0]} onChange={() => {}} options={assessmentTypes.slice(0,2)} /> {/* Using a subset for example */}
+            <CustomSelect
+              value={selectedLevel}
+              onChange={(e) => {
+                setSelectedLevel(e.target.value);
+              }}
+              options={levels}
+              primary
+            />
+            <CustomSelect
+              value={selectedAssessment}
+              onChange={(e) => {
+                setSelectedAssessment(e.target.value);
+              }}
+              options={assessmentTypes.slice(0, 5)}
+            />{" "}
+            {/* Using a subset for example */}
           </div>
           <div className="relative w-full sm:w-auto mt-2 sm:mt-0">
             <input
@@ -336,15 +478,21 @@ const CreateAssessment: React.FC<CreateAssessmentProps> = ({ kidName = "John Doe
 
         {preGeneratedPacks.map((pack, index) => (
           <div key={index} className="mb-8">
-            <h3 className="text-lg font-semibold text-gray-700 mb-4">{pack.level}</h3>
+            <h3 className="text-lg font-semibold text-gray-700 mb-4">
+              {pack.level}
+            </h3>
             <div className="flex flex-wrap gap-4">
               {pack.cards
-                .filter(card => card.title.toLowerCase().includes(searchTerm.toLowerCase())) // Basic search filter
-                .map(card => (
+                .filter((card) =>
+                  card.title.toLowerCase().includes(searchTerm.toLowerCase())
+                ) // Basic search filter
+                .map((card) => (
                   <CardPackItem
                     key={card.id}
                     {...card}
-                    onImageClick={() => handleCardImageClick(card.images, card.title)}
+                    onImageClick={() =>
+                      handleCardImageClick(card.images, card.title)
+                    }
                   />
                 ))}
             </div>
@@ -363,16 +511,3 @@ const CreateAssessment: React.FC<CreateAssessmentProps> = ({ kidName = "John Doe
 };
 
 export default CreateAssessment;
-
-// --- Storybook or App entry point example ---
-// const App = () => {
-//   const handleBack = () => {
-//     console.log("Back button clicked");
-//   };
-//   return (
-//     <div className="bg-gray-100 p-4">
-//       <CreateAssessment kidName="Alex Johnson" onBack={handleBack} />
-//     </div>
-//   );
-// }
-// export { App }; // You would render App in your main application file

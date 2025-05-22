@@ -1,20 +1,29 @@
-import React from 'react';
-import Image from 'next/image';
-import { Heart, Eye } from 'lucide-react';
+import React from "react";
+import Image from "next/image";
+import { Heart, Eye } from "lucide-react";
 
 interface CardProps {
   id: string;
   title: string;
   image: string;
   rating: number;
+  textColor?: string;
   category: string;
-  type: 'story' | 'activity';
-  author:'BCBA Created'| string;
+  type: "story" | "activity";
+  author: "BCBA Created" | string;
   onClick?: () => void;
 }
 
-const Card: React.FC<CardProps> = ({ title, image, rating, type, onClick,author }) => {
-  return (  
+const Card: React.FC<CardProps> = ({
+  title,
+  image,
+  rating,
+  textColor = "text-gray-800",
+  type,
+  onClick,
+  author,
+}) => {
+  return (
     <div className="w-full max-w-[20rem] cursor-pointer" onClick={onClick}>
       <div className="relative w-full rounded-xl overflow-hidden bg-white">
         <Image
@@ -24,27 +33,27 @@ const Card: React.FC<CardProps> = ({ title, image, rating, type, onClick,author 
           height={200}
           className="object-cover w-full h-[180px]"
         />
-      
       </div>
 
       <div className="mt-3">
-      <div className='flex justify-between items-center'>
-          <div className="font-semibold text-[#2E74FF]  py-2 rounded-full text-[13px] bg-white">
+        <div className="flex justify-between items-center">
+          <div className="font-semibold text-[#2E74FF]  py-2 rounded-full text-[13px] ">
             {type.toUpperCase()}
           </div>
           <div className="flex space-x-2">
-            <div className="bg-white rounded-full p-1.5 flex items-center space-x-1">
-              <Heart fill='#FFC700' className='text-[#FFC700] h-4 w-4'/>
+            <div className=" rounded-full p-1.5 flex items-center space-x-1">
+              <Heart fill="#FFC700" className="text-[#FFC700] h-4 w-4" />
               <span className="text-xs font-medium">23</span>
             </div>
-            <div className="bg-white rounded-full p-1.5 flex items-center space-x-1">
-              <Eye className='text-[#FFC700] h-4 w-4'/>
+            <div className=" rounded-full p-1.5 flex items-center space-x-1">
+              <Eye className="text-[#FFC700] h-4 w-4" />
               <span className="text-xs font-medium">1k</span>
             </div>
           </div>
         </div>
-        <h3 className="text-md font-medium mb-1.5 text-gray-800 line-clamp-2">{title}</h3>
-        <h3 className='text-sm text-purple-300 '>{author}</h3>
+        <h3 className={`text-md font-medium mb-1.5 ${textColor} line-clamp-2`}>
+          {title}
+        </h3>
         <div className="flex items-center mb-1">
           {[...Array(5)].map((_, index) => (
             <svg
@@ -59,9 +68,10 @@ const Card: React.FC<CardProps> = ({ title, image, rating, type, onClick,author 
             </svg>
           ))}
         </div>
+        <h3 className="text-sm text-purple-300 "> {author}</h3>
       </div>
     </div>
   );
 };
 
-export default Card; 
+export default Card;

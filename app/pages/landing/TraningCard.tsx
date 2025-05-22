@@ -20,7 +20,7 @@ const SkillTrainingCardsSection: React.FC = () => {
               teach skills like emotion regulation, problem-solving and positive
               behaviors.
             </p>
-            <button className="bg-yellow-400 text-gray-800 font-semibold px-8 py-3.5 rounded-lg text-md sm:text-lg hover:bg-yellow-500 transition-colors shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-50">
+            <button className="bg-yellow-400 text-[#6100FF] font-semibold px-8 py-3.5 rounded-lg text-md sm:text-lg hover:bg-yellow-500 transition-colors shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-50">
               Explore Community Cards
             </button>
           </div>

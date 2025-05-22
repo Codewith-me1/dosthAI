@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation'; // Or use a prop for navigation
-import { ArrowLeft, Star, Trash2, Save, CheckCircle } from 'lucide-react';
+import React, { useState } from "react";
+import Image from "next/image";
+import { useRouter } from "next/navigation"; // Or use a prop for navigation
+import { ArrowLeft, Star, Trash2, Save, CheckCircle } from "lucide-react";
 
 // Define the props for the component
 interface GeneratedContentDisplayProps {
@@ -44,7 +44,7 @@ const StarRating: React.FC<StarRatingProps> = ({
             key={i}
             type="button"
             onClick={() => onRatingChange(ratingValue)}
-            onMouseEnter={() => {}} // Could add hover effect here
+            onMouseEnter={() => {}}
             onMouseLeave={() => {}}
             className="focus:outline-none"
             aria-label={`Rate ${ratingValue} out of ${count} stars`}
@@ -54,7 +54,7 @@ const StarRating: React.FC<StarRatingProps> = ({
               className={`${
                 ratingValue <= rating ? starColor : emptyStarColor
               } transition-colors duration-150`}
-              fill={ratingValue <= rating ? 'currentColor' : 'none'}
+              fill={ratingValue <= rating ? "currentColor" : "none"}
             />
           </button>
         );
@@ -63,13 +63,14 @@ const StarRating: React.FC<StarRatingProps> = ({
   );
 };
 
-type DisplayItem = 
-  | { type: 'image'; content: string }
-  | { type: 'ratingCard'; content: null };
+type DisplayItem =
+  | { type: "image"; content: string }
+  | { type: "ratingCard"; content: null };
 
 const GeneratedContentDisplay: React.FC<GeneratedContentDisplayProps> = ({
   promptTitle = "Create a pack of cards with cat dressed as karate kid", // Default for demo
-  imageUrls = [ // Default for demo, parent should provide these
+  imageUrls = [
+    // Default for demo
     "https://placehold.co/400x500/A78BFA/FFFFFF?text=Cat+Karate+1&font=lora",
     "https://placehold.co/400x500/A78BFA/FFFFFF?text=Cat+Karate+2&font=lora",
     "https://placehold.co/400x500/A78BFA/FFFFFF?text=Cat+Karate+3&font=lora",
@@ -94,59 +95,48 @@ const GeneratedContentDisplay: React.FC<GeneratedContentDisplayProps> = ({
     }
   };
 
-  // Combine image URLs and a placeholder for the rating card to map them in the grid
-  const gridItems = [
-    ...imageUrls.map(url => ({ type: 'image', content: url })),
-    { type: 'ratingCard', content: null } // Placeholder for the rating card
-  ];
-  
-  // Ensure there are always 6 items for a consistent 2x3 or 3x2 grid,
-  // or adjust grid logic if item count can vary significantly.
-  // For this example, if imageUrls has 5 items, plus rating card, it's 6 items.
-  // If fewer images, you might want to fill with placeholders or adjust grid.
-  const displayItems: DisplayItem[] = imageUrls.slice(0, numCards - 1).map(url => ({ type: 'image', content: url }));
-  if (displayItems.length < numCards) {
-    displayItems.push({ type: 'ratingCard', content: null });
-  }
-  while (displayItems.length < numCards && displayItems.length > 0) {
-    if (displayItems.filter(item => item.type === 'ratingCard').length === 0) {
-      displayItems.push({ type: 'ratingCard', content: null });
-    } else {
-      // Optionally add image placeholders here if you want to fill up to numCards
-      break;
+  const displayItems: DisplayItem[] = [];
+  if (numCards > 0) {
+    const imagesToShow = imageUrls.slice(0, numCards - 1);
+    imagesToShow.forEach((url) =>
+      displayItems.push({ type: "image", content: url })
+    );
+    if (displayItems.length < numCards) {
+      displayItems.push({ type: "ratingCard", content: null });
     }
+  } else if (numCards === 1 && imageUrls.length === 0) {
+    displayItems.push({ type: "ratingCard", content: null });
   }
-
 
   return (
-    <div className="min-h-screen bg-slate-100 font-sans flex flex-col">
+    <div className="min-h-screen  font-sans flex flex-col">
       {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-10">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <header className="bg-white  sticky top-0 z-10">
+        <div className="container  px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <button
               onClick={handleGoBack}
-              className="flex items-center text-gray-600 hover:text-purple-600 transition-colors p-2 -ml-2 rounded-full"
+              className="flex items-center border-2  border-[#6100FF] text-[#6100FF] hover:text-[#6100FF] transition-colors p-2 -ml-2 rounded-lg"
               aria-label="Go back"
             >
-              <ArrowLeft size={24} />
+              <ArrowLeft size={20} />
             </button>
-            <h1 className="text-lg sm:text-xl font-semibold text-gray-800 truncate px-2 text-center flex-1">
+            <h1 className="text-lg md:text-2xl ml-5 sm:text-xl font-semibold text-gray-800 truncate px-2  flex-1">
               {promptTitle}
             </h1>
-            <div className="w-8"> {/* Spacer to balance the back button */} </div>
           </div>
         </div>
       </header>
 
       {/* Main Content Area */}
       <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        {/* MODIFIED: Grid classes updated for 1, 2, and 4 column layouts */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
           {displayItems.map((item, index) => {
-            if (item.type === 'image') {
+            if (item.type === "image") {
               return (
                 <div
-                  key={`img-${index}`}
+                  key={`img-${index}`} // It's good practice to have stable keys if items can be reordered. Consider using image URL or a unique ID if available.
                   className="aspect-[4/5] bg-gray-200 rounded-xl border-4 border-yellow-400 overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 group"
                 >
                   <Image
@@ -155,13 +145,10 @@ const GeneratedContentDisplay: React.FC<GeneratedContentDisplayProps> = ({
                     width={400} // Intrinsic width, will be scaled by container
                     height={500} // Intrinsic height
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    // Add placeholder for loading if needed
-                    // placeholder="blur" 
-                    // blurDataURL="data:image/png;base64,..."
                   />
                 </div>
               );
-            } else if (item.type === 'ratingCard') {
+            } else if (item.type === "ratingCard") {
               return (
                 <div
                   key="rating-card"

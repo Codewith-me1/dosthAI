@@ -9,7 +9,7 @@ import {
   Upload,
 } from "lucide-react";
 import CarouselCard from "./pages/landing/carouselCard";
-import SocialStoriesSection from "./pages/landing/test";
+import SocialStoriesSection from "./pages/landing/SocailStories";
 import SkillTrainingCardsSection from "./pages/landing/TraningCard";
 import ExploreActivitiesSection from "./pages/landing/ExploreActivities";
 import PricingPlansSection from "./pages/landing/Pricing";
@@ -30,17 +30,17 @@ export default function Home() {
 
         <div className="space-y-6">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
-            <span className="text-purple-600">Personalized AI - Powered</span>
+            <span className="text-[#6100FF]">Personalized AI - Powered</span>
             <br />
             Learning Tool for <br />
             Neurodivergent Individuals
           </h1>
 
           <div className="flex space-x-4">
-            <button className="px-5 py-2 rounded-md bg-white border border-purple-600 text-purple-600 hover:bg-purple-100 transition">
+            <button className="px-5 py-2 rounded-md bg-white border border-[#6100FF] text-[#6100FF] hover:bg-purple-100 transition">
               Book a Demo
             </button>
-            <button className="px-5 py-2 rounded-md bg-purple-600 text-white hover:bg-purple-700 transition">
+            <button className="px-5 py-2 rounded-md bg-[#6100FF] text-white  transition">
               Sign Up
             </button>
           </div>

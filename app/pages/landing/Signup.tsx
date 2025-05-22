@@ -2,10 +2,20 @@
 
 import { FC, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-
+import { useRouter } from "next/navigation";
 const AuthForm: FC = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const handleGoogleSignIn = async () => {
+    // await signInWithGoogle your auth logic
+    router.push("/explore");
+  };
+
+  const handleSignIn = () => {
+    router.push("/explore");
+  };
 
   return (
     <div className="w-full mx-auto px-10 mt-10 md:px-20 lg:px-10 xl:px-60  ">
@@ -57,18 +67,33 @@ const AuthForm: FC = () => {
               {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
-          <button className="bg-[#6100FF] text-white font-semibold py-2 rounded-md hover:opacity-90 transition-all">
+          <button
+            onClick={() => {
+              handleSignIn();
+            }}
+            className="bg-[#6100FF] text-white font-semibold py-2 rounded-md hover:opacity-90 transition-all"
+          >
             Let's Go!
           </button>
         </div>
 
         {/* Right Auth Providers */}
         <div className="flex flex-col gap-4 justify-center items-center">
-          <button className="w-full flex items-center justify-center gap-2 border border-gray-300 py-2 bg-[#FFFFFF] rounded-3xl hover:bg-gray-50">
+          <button
+            onClick={() => {
+              handleSignIn();
+            }}
+            className="w-full flex items-center justify-center gap-2 border border-gray-300 py-2 bg-[#FFFFFF] rounded-3xl hover:bg-gray-50"
+          >
             <img src="/icons/google.svg" alt="Google" className="w-5 h-5" />
             Sign in with Google
           </button>
-          <button className="w-full  flex items-center justify-center gap-2 border border-gray-300 py-2 rounded-3xl bg-[#FFFFFF] hover:bg-gray-50">
+          <button
+            onClick={() => {
+              handleSignIn();
+            }}
+            className="w-full  flex items-center justify-center gap-2 border border-gray-300 py-2 rounded-3xl bg-[#FFFFFF] hover:bg-gray-50"
+          >
             <img src="/icons/apple.svg" alt="Apple" className="w-5 h-5" />
             Sign in with Apple
           </button>

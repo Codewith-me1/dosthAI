@@ -6,7 +6,7 @@ import Image from "next/image";
 
 export default function ExploreActivities() {
   const sectionRef = useRef(null);
-  const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
+  const isInView = useInView(sectionRef, { once: true, amount: 0.7 });
 
   return (
     <section
@@ -15,7 +15,7 @@ export default function ExploreActivities() {
     >
       {/* Left Section */}
       <div className="max-w-xl space-y-6">
-        <h2 className="text-3xl md:text-4xl font-semibold text-gray-900">
+        <h2 className="text-3xl md:text-5xl font-semibold text-gray-900">
           Explore <span className="text-black font-bold">Activities</span>
         </h2>
         <p className="text-gray-700 text-base md:text-lg">
@@ -23,7 +23,7 @@ export default function ExploreActivities() {
           <span className="text-purple-600 font-medium">step by step</span>{" "}
           guide for daily activities
         </p>
-        <button className="bg-yellow-400 hover:bg-yellow-500 text-black font-medium text-sm px-6 py-3 rounded-md">
+        <button className="bg-yellow-400 text-[#6100FF] font-semibold px-8 py-3.5 rounded-lg text-md sm:text-lg hover:bg-yellow-500 transition-colors shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-50">
           Explore Community Activities
         </button>
       </div>
