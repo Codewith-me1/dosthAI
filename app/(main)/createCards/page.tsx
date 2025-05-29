@@ -1,6 +1,6 @@
 // app/createCards/page.tsx (or your specific page file)
 import React, { Suspense } from "react";
-import CreateCardsContent from "@/app/components/dashboard/create"; // Adjust path as needed
+import CreateCardsContent from "@/app/components/dashboard/create/createCards/MainCreate"; // Adjust path as needed
 
 // Optional: A simple loading fallback component
 const LoadingFallback = () => {

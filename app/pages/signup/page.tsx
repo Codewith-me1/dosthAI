@@ -1,14 +1,9 @@
-import SignUp from "@/app/components/Signup"
-
-
+import SignUp from "@/app/components/registration/Signup";
 
 export default function LoginPage() {
-
-
-    return (
-        <div>
-            <SignUp />
-        </div>
-    )
- }
-
+  return (
+    <div>
+      <SignUp />
+    </div>
+  );
+}

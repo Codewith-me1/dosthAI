@@ -10,7 +10,7 @@ const Footer: React.FC = () => {
             <div className="flex items-center mb-3">
               <div className="h-20 w-40   flex items-center justify-center mr-3">
                 <Image
-                  src="/logoblack.png"
+                  src="/icons/logo.png"
                   alt="Dosth AI Logo"
                   width={200}
                   height={80}

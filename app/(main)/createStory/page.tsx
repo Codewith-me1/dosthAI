@@ -3,7 +3,7 @@
 import { ArrowBigRight, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
-import CreateCharacterModal from "../../components/dashboard/CreateCharacterModal";
+import CreateCharacterModal from "../../components/dashboard/modals/CreateCharacterModal";
 import Link from "next/link";
 
 const defaultCharacters = [
@@ -76,7 +76,7 @@ export default function CreateStoryPage() {
               className="flex items-center text-gray-400 justify-center h-10 w-10 ml-2 rounded-full hover:text-[#6100FF] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500"
               aria-label="Go to Create Story"
             >
-              <Link href="/test" className=" flex items-center z-10">
+              <Link href="/editStory" className=" flex items-center z-10">
                 <ArrowRight className="h-6 w-6" />
               </Link>
             </button>

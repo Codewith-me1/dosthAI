@@ -1,11 +1,10 @@
-"use client"; // Required because we're using useState for the modal
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import RequestDemoModal from "../pages/landing/ContactModal"; // Adjust the import path as necessary
+import RequestDemoModal from "../components/landing/ContactModal";
 
-// Define the type for form details if you want to use it in handleFormSubmit
 interface DemoRequestDetails {
   name: string;
   email: string;
@@ -15,8 +14,6 @@ interface DemoRequestDetails {
 const navLinks = [
   { name: "Individuals", href: "#individuals" },
   { name: "Pricing", href: "#pricing" },
-  // "Contact Us" will now be handled differently to open the modal
-  // { name: "Contact Us", href: "#contact" },
 ];
 
 export default function Header() {
@@ -39,7 +36,7 @@ export default function Header() {
       <header className="w-full bg-[#F5F8FC] py-3 px-4 md:px-12 flex items-center justify-between shadow-sm sticky top-0 z-[900]">
         <div className="flex items-center gap-3">
           <Image
-            src="/logo.png" // Ensure this path is correct in your public folder
+            src="/icons/logo.png" // Ensure this path is correct in your public folder
             alt="Dosth AI Logo"
             width={40}
             height={40}
@@ -73,9 +70,7 @@ export default function Header() {
           >
             Sign In
           </Link>
-          {/* Mobile Menu Button (placeholder, implement if needed) */}
           <button className="md:hidden ml-4 p-2 text-gray-600 hover:text-[#6100FF]">
-            {/* Add a menu icon here, e.g., from lucide-react */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"

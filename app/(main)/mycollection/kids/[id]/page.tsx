@@ -4,15 +4,16 @@ import React, { useState, useEffect } from "react";
 import { notFound, useParams } from "next/navigation";
 
 // --- Component Imports ---
-import Sidebar from "@/app/components/dashboard/Sidebar";
-import KidProfile from "@/app/components/dashboard/KidProfile";
-import Card from "@/app/components/dashboard/Card";
-import CreateAssessment from "@/app/components/dashboard/CreateAssessment";
-import StoryPopup from "@/app/components/dashboard/VideoPopup";
+import Sidebar from "@/app/components/dashboard/collection/Sidebar";
+import KidProfile from "@/app/components/dashboard/kidProfile/KidProfile";
+import Card from "@/app/components/dashboard/common/Card";
+import CreateAssessment from "@/app/components/dashboard/assement/CreateAssessment";
+import StoryPopup from "@/app/components/dashboard/video/VideoPopup";
 
 // --- Data Import ---
 import storyJson from "@/public/story_json.json";
 import paintStory from "@/public/paintStory.json"; // Import paintStory
+import CreateStoryCta from "@/app/components/dashboard/kidProfile/CTA";
 
 // --- Interfaces ---
 interface KidInfo {
@@ -160,9 +161,10 @@ export default function KidPage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="flex">
       <Sidebar />
-      <main className="lg:pl-64">
+
+      <main>
         <div className="md:max-w-7xl md:mx-20 px-4 sm:px-6 lg:px-8 py-8">
           {showCreateAssessment ? (
             <CreateAssessment
@@ -202,6 +204,9 @@ export default function KidPage() {
                     />
                   ))}
               </div>
+
+              <CreateStoryCta />
+
               {/* Assessment Section */}
               <div className="mt-12">
                 <div className="flex justify-end mb-4"></div>

@@ -9,6 +9,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+   --breakpoint-3xl: 120rem;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -56,3 +57,12 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+/* 
+
+For Overriding the default button styles in Tailwind CSS 
+
+button{
+  background: white !important;
+} 
+  
+*/
