@@ -57,12 +57,11 @@ function getKidById(id: string | string[]): KidInfo {
   return kid || { id: "1", name: "John Doe", age: "8", role: "student" };
 }
 
-// Updated dummy cards - Assign dataKey and update activity card
 const dummyCards: CardInfo[] = [
   {
     id: "c1",
-    title: "Coping Skills: Sad", // Example title from storyJson
-    image: "/dummyimage.jpg", // Use thumbnail from JSON if available
+    title: "Coping Skills: Sad",
+    image: "/cards/dummyimage.jpg",
     rating: 4.5,
     category: "Coping Strategies",
     type: "story",
@@ -70,17 +69,17 @@ const dummyCards: CardInfo[] = [
   },
   {
     id: "c2",
-    title: paintStory.title || "Creative Painting Fun", // Use title from paintStory.json
-    image: "/dummyimage.jpg", // Use specific image or thumbnail
+    title: paintStory.title || "Creative Painting Fun",
+    image: "/cards/.jpg",
     rating: 4.8,
-    category: "Creative Activity", // Updated category
+    category: "Creative Activity",
     type: "activity",
-    dataKey: "paintStoryJson", // Link this card to paintStory data
+    dataKey: "paintStoryJson",
   },
   {
     id: "c3",
-    title: "Bedtime Preparation", // Another story example
-    image: "/dummyimage.jpg",
+    title: "Bedtime Preparation",
+    image: "/cards/dummyimage.jpg",
     rating: 4.2,
     category: "routine",
     type: "story",

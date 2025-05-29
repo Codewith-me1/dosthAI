@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 
 interface Storyline {
-  id: string; 
+  id: string;
   title: string;
   makePublic: boolean;
   mainImage: string;
@@ -59,7 +59,7 @@ const Test: React.FC = () => {
     initialStorylinesData.map((story, index) => ({
       ...story,
       id: generateId(), // Assign a unique ID
-      mainImage: `/dummyimage.jpg`,
+      mainImage: `/cards/dummyimage.jpg`,
       generatedImages: [],
       isLoadingImages: false,
     }))
@@ -101,7 +101,7 @@ const Test: React.FC = () => {
 
     const newGeneratedImages = [
       `/Kids.jpg?gen=${Math.random()}`,
-      `/dummyimage.jpg?gen=${Math.random()}`,
+      `/cards/dummyimage.jpg?gen=${Math.random()}`,
       `/Kids.jpg?gen=${Math.random()}`,
     ];
 
@@ -158,7 +158,7 @@ const Test: React.FC = () => {
       id: generateId(),
       title: `New Storyline ${storylines.length + 1}`,
       makePublic: false,
-      mainImage: `/dummyimage${(storylines.length % 3) + 1}.jpg`, // Cycle through dummy images
+      mainImage: `/cards/dummyimage${(storylines.length % 3) + 1}.jpg`, // Cycle through dummy images
       generatedImages: [],
       isLoadingImages: false,
     };

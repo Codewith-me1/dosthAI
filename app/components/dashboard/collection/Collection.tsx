@@ -33,7 +33,7 @@ const Collection = ({ category }: CollectionSidebar) => {
     {
       id: "1",
       title: "How to walk my dog?",
-      imageUrl: "/dummyimage.jpg",
+      imageUrl: "/cards/dummyimage.jpg",
       rating: 4.5,
       views: 1.2,
       type: "story",
@@ -41,7 +41,7 @@ const Collection = ({ category }: CollectionSidebar) => {
     {
       id: "2",
       title: "Dog training basics",
-      imageUrl: "/dummyimage.jpg",
+      imageUrl: "/cards/dummyimage.jpg",
       rating: 4.8,
       views: 2.1,
       type: "story",
@@ -49,7 +49,7 @@ const Collection = ({ category }: CollectionSidebar) => {
     {
       id: "3",
       title: "Dog walking tips",
-      imageUrl: "/dummyimage.jpg",
+      imageUrl: "/cards/dummyimage.jpg",
       rating: 4.3,
       views: 1.5,
       type: "story",
@@ -57,7 +57,7 @@ const Collection = ({ category }: CollectionSidebar) => {
     {
       id: "4",
       title: "Interactive play",
-      imageUrl: "/dummyimage.jpg",
+      imageUrl: "/cards/dummyimage.jpg",
       rating: 4.7,
       views: 1.8,
       type: "activity",
@@ -65,7 +65,7 @@ const Collection = ({ category }: CollectionSidebar) => {
     {
       id: "5",
       title: "Mental stimulation",
-      imageUrl: "/dummyimage.jpg",
+      imageUrl: "/cards/dummyimage.jpg",
       rating: 4.6,
       views: 1.3,
       type: "activity",
@@ -73,7 +73,7 @@ const Collection = ({ category }: CollectionSidebar) => {
     {
       id: "6",
       title: "Card game one",
-      imageUrl: "/dummyimage.jpg",
+      imageUrl: "/cards/dummyimage.jpg",
       rating: 4.6,
       views: 1.3,
       type: "cards-pack",
@@ -81,7 +81,7 @@ const Collection = ({ category }: CollectionSidebar) => {
     {
       id: "7",
       title: "Card game two",
-      imageUrl: "/dummyimage.jpg",
+      imageUrl: "/cards/dummyimage.jpg",
       rating: 4.6,
       views: 1.3,
       type: "cards-pack",
@@ -89,7 +89,7 @@ const Collection = ({ category }: CollectionSidebar) => {
     {
       id: "8",
       title: "Card game three",
-      imageUrl: "/dummyimage.jpg",
+      imageUrl: "/cards/dummyimage.jpg",
       rating: 4.6,
       views: 1.3,
       type: "cards-pack",

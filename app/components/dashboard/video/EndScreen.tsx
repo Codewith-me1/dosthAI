@@ -59,7 +59,7 @@ const EndScreen = () => {
     {
       id: "4",
       title: "How to walk my dog lorem ipsum dolor amet?",
-      imageUrl: "/dummyimage.jpg",
+      imageUrl: "/cards/dummyimage.jpg",
       rating: 4.7,
       views: 1.8,
       type: "activity",
@@ -67,7 +67,7 @@ const EndScreen = () => {
     {
       id: "5",
       title: "How to walk my dog lorem ipsum dolor amet?",
-      imageUrl: "/dummyimage.jpg",
+      imageUrl: "/cards/dummyimage.jpg",
       rating: 4.6,
       views: 1.3,
       type: "activity",
@@ -75,7 +75,6 @@ const EndScreen = () => {
   ];
 
   const handleCardClick = (storyId: string) => {
-    // Handle navigation or playing the next story
     console.log("Clicked on story:", storyId);
   };
 
@@ -90,27 +89,20 @@ const EndScreen = () => {
   const handleSaveForProfile = (profileId: string | number) => {
     console.log("Saving story for profile ID:", profileId);
     setSavingForProfileId(profileId);
-    // You might want to perform an actual save operation here
-    // Optionally, close the modal after selection:
-    // closeSaveModal();
   };
 
   const handleSaveInMyStuffChange = (isChecked: boolean) => {
     setIsSavedInMyStuff(isChecked);
     console.log("Save in my stuff:", isChecked);
-    // You might want to perform an actual save operation here
   };
 
   return (
     <>
       <div className="flex-grow flex flex-col items-center justify-center  text-white">
         {" "}
-        {/* Added background and text color for visibility */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold mb-2">Let's create a story</h1>
           <p className="text-gray-400 mb-6">Do you like this story?</p>
-
-          {/* Star Rating */}
           <div className="flex justify-center gap-2 mb-6">
             {[1, 2, 3, 4, 5].map((star) => (
               <button
