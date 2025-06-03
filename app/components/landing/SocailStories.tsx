@@ -74,8 +74,8 @@ const SocialStoriesSection: React.FC = () => {
   }, [isTimerActive, nextImage]);
 
   return (
-    <section className="w-full    my-10  p-6 md:p-12 ">
-      <div className=" px-4 3xl:mx-auto 3xl:flex 3xl:flex-col  3xl:justify-between 3xl:max-w-[150rem]">
+    <section className="w-full 3xl:max-w-[200rem] 3xl:gap-[20rem] 3xl:mx-auto 3xl:flex 3xl:justfiy-center   my-10  p-6 md:p-12 ">
+      <div className=" px-4 3xl:mx-auto ">
         <div className=" lg:w-8/12 text-center lg:text-left">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 mb-4">
             Explore Social Stories
@@ -91,9 +91,12 @@ const SocialStoriesSection: React.FC = () => {
               </span>
               , help individuals prepare for real world situations.
             </p>
-            <button className="bg-[#FFC700] text-[#6100FF] font-semibold px-8 py-3 rounded-lg text-lg hover:bg-yellow-500 transition-colors shadow-md hover:shadow-lg">
+            <a
+              href="/explore"
+              className="bg-[#FFC700] text-[#6100FF] font-semibold px-8 py-3 rounded-lg text-lg hover:bg-yellow-500 transition-colors shadow-md hover:shadow-lg"
+            >
               Explore Community Stories
-            </button>
+            </a>
           </div>
 
           <div className="flex-1  w-full md:ml-100">

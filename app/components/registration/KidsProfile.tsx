@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import KidsProfileList from "./KidsProfileList";
+import { useRouter } from "next/navigation";
 
 interface KidsProfileProps {
   onBack: () => void;
@@ -16,6 +17,7 @@ export interface KidsProfileData {
 }
 
 export default function KidsProfile({ onBack }: KidsProfileProps) {
+  const router = useRouter();
   const [showProfileForm, setShowProfileForm] = useState(true);
   const [profiles, setProfiles] = useState<{ name: string; age: string }[]>([]);
   const [formData, setFormData] = useState<KidsProfileData>({
@@ -75,6 +77,7 @@ export default function KidsProfile({ onBack }: KidsProfileProps) {
     });
     setShowProfileForm(false);
   };
+  const onSkip = () => {};
 
   if (!showProfileForm) {
     return (
@@ -212,7 +215,7 @@ export default function KidsProfile({ onBack }: KidsProfileProps) {
             <div className="flex gap-4 justify-between">
               <button
                 type="button"
-                onClick={onBack}
+                onClick={onSkip}
                 className="text-[#2E74FF] font-medium hover:underline"
               >
                 Skip

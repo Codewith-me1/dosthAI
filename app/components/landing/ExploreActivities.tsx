@@ -11,7 +11,7 @@ export default function ExploreActivities() {
   return (
     <section
       ref={sectionRef}
-      className="w-full 3xl:mx-auto 3xl:max-w-[150rem] flex flex-col md:flex-row items-center justify-between gap-8 p-6 md:p-12 "
+      className="w-full 3xl:mx-auto 3xl:max-w-[200rem] flex flex-col md:flex-row items-center 3xl:gap-[20rem] 3xl:justify-center justify-between gap-8 p-6 md:p-12 "
     >
       {/* Left Section */}
       <div className="max-w-xl space-y-6">
@@ -23,9 +23,12 @@ export default function ExploreActivities() {
           <span className="text-purple-600 font-medium">step by step</span>{" "}
           guide for daily activities
         </p>
-        <button className="bg-yellow-400 text-[#6100FF] font-semibold px-8 py-3.5 rounded-lg text-md sm:text-lg hover:bg-yellow-500 transition-colors shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-50">
+        <a
+          href="/explore"
+          className="bg-yellow-400 text-[#6100FF] font-semibold px-8 py-3.5 rounded-lg text-md sm:text-lg hover:bg-yellow-500 transition-colors shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-50"
+        >
           Explore Community Activities
-        </button>
+        </a>
       </div>
 
       <div className="relative flex items-center justify-center  overflow-visible">

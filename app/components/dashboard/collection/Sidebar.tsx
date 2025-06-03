@@ -218,9 +218,13 @@ const Sidebar: React.FC<SidebarProps> = ({ activeMenu, onMenuClick }) => {
 
           {/* Buy Coins Section */}
           <div className="mt-auto">
-            <h3 className="text-sm font-medium text-[#2E74FF] mb-2">
+            <a
+              href="/account"
+              className="text-sm block font-medium text-[#2E74FF] mb-2"
+            >
               Buy more coins
-            </h3>
+            </a>
+
             <a href="/account" className="text-sm text-gray-600 mb-1">
               Buy coins to create, stories, activities, & Cards
             </a>

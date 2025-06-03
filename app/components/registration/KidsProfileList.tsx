@@ -20,8 +20,8 @@ export default function KidsProfileList({
   const [profiles] = useState<KidProfile[]>(initialProfiles);
   const router = useRouter();
 
-  const handleNext = () => {
-    router.push("/");
+  const handleSignUp = () => {
+    router.push("/explore");
   };
 
   const getInitials = (name: string) => {
@@ -30,7 +30,7 @@ export default function KidsProfileList({
 
   return (
     <div className="min-h-screen flex flex-col items-center p-8 max-w-2xl mx-auto">
-      <h1 className="text-4xl font-bold text-[#C099FF] mb-4">
+      <h1 className="text-4xl font-bold  text-[#C099FF] mb-4">
         Add your kids profile!
       </h1>
       <p className="text-lg text-gray-600 mb-8">
@@ -95,7 +95,10 @@ export default function KidsProfileList({
       </div>
 
       <div className="mt-auto pt-8">
-        <button className="w-full max-w-xs bg-[#6000fe] text-white py-3 px-8 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
+        <button
+          onClick={handleSignUp}
+          className="w-full max-w-xs bg-[#6000fe] text-white py-3 px-8 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+        >
           Next
         </button>
       </div>

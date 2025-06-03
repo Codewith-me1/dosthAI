@@ -16,8 +16,8 @@ export const metadata: Metadata = {
   title: "Dosth AI",
   description: "Dosth AI - Supporting Neurodivergent Community",
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
+    icon: "/logo.png",
+    shortcut: "/logo.png",
   },
 };
 

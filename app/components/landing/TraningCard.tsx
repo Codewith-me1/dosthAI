@@ -8,8 +8,8 @@ const mainCardImageUrl = "/landingImg/firefly.jpg";
 
 const SkillTrainingCardsSection: React.FC = () => {
   return (
-    <section className="w-full  p-6 md:p-12  overflow-hidden">
-      <div className="px-4 3xl:mx-auto 3xl:flex 3xl:flex-col  3xl:justify-between 3xl:max-w-[150rem]">
+    <section className="w-full 3xl:mx-auto 3xl:max-w-[200rem] p-6 md:p-12 3xl:flex 3xl:justfiy-center overflow-hidden">
+      <div className="px-4 3xl:mx-auto ">
         <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-center">
           <div className="lg:w-1/2 text-center lg:text-left">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 mb-5">
@@ -20,9 +20,12 @@ const SkillTrainingCardsSection: React.FC = () => {
               teach skills like emotion regulation, problem-solving and positive
               behaviors.
             </p>
-            <button className="bg-yellow-400 text-[#6100FF] font-semibold px-8 py-3.5 rounded-lg text-md sm:text-lg hover:bg-yellow-500 transition-colors shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-50">
+            <a
+              href="/explore"
+              className="bg-yellow-400 text-[#6100FF] font-semibold px-8 py-3.5 rounded-lg text-md sm:text-lg hover:bg-yellow-500 transition-colors shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-50"
+            >
               Explore Community Cards
-            </button>
+            </a>
           </div>
 
           <div className="lg:w-1/2 w-full  mt-10 lg:mt-0">

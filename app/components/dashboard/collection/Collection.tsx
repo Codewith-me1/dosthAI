@@ -94,6 +94,15 @@ const Collection = ({ category }: CollectionSidebar) => {
       views: 1.3,
       type: "cards-pack",
     },
+
+    {
+      id: "9",
+      title: "This is a Test",
+      imageUrl: "/cards/dummyimage.jpg",
+      rating: 4.6,
+      views: 1.3,
+      type: "cards-pack",
+    },
   ];
 
   const filteredItems =

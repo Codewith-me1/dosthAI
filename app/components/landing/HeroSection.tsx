@@ -1,7 +1,30 @@
+"use client";
+
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
+import RequestDemoModal from "./ContactModal";
 
 const HeroSection = () => {
+  interface DemoRequestDetails {
+    name: string;
+    email: string;
+    role: string;
+  }
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
+
+  const handleFormSubmit = (details: DemoRequestDetails) => {
+    console.log("Demo Request Submitted:", details);
+    // Add your submission logic here (e.g., API call)
+    alert(
+      `Thank you, ${details.name}! We will contact you at ${details.email} regarding your role as ${details.role}.`
+    );
+    handleCloseModal(); // Close modal after submission
+  };
+
   return (
     <div className="w-full overflow-hidden flex flex-col   md:flex-row justify-between 3xl:items-center 3xl:justify-around  z-10 pt-12 md:pt-16 md:pl-20  mx-auto">
       {/* Left Section */}
@@ -15,12 +38,18 @@ const HeroSection = () => {
         </h1>
 
         <div className="flex space-x-4">
-          <button className="px-5 py-2 rounded-md bg-white border border-[#6100FF] text-[#6100FF] hover:bg-purple-100 transition">
+          <button
+            onClick={handleOpenModal}
+            className="px-5 py-2 rounded-md bg-white border border-[#6100FF] text-[#6100FF] hover:bg-purple-100 transition"
+          >
             Book a Demo
           </button>
-          <button className="px-5 py-2 rounded-md bg-[#6100FF] text-white  transition">
+          <a
+            href="/pages/signup"
+            className="px-5 py-2 rounded-md bg-[#6100FF] text-white  transition"
+          >
             Sign Up
-          </button>
+          </a>
         </div>
       </div>
 
@@ -68,6 +97,12 @@ const HeroSection = () => {
           </div>
         </div>
       </div>
+
+      <RequestDemoModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onSubmit={handleFormSubmit}
+      />
     </div>
   );
 };

@@ -11,10 +11,7 @@ interface DemoRequestDetails {
   role: string;
 }
 
-const navLinks = [
-  { name: "Individuals", href: "#individuals" },
-  { name: "Pricing", href: "#pricing" },
-];
+const navLinks = [{ name: "Pricing", href: "#pricing" }];
 
 export default function Header() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,7 +33,7 @@ export default function Header() {
       <header className="w-full bg-[#F5F8FC] py-3 px-4 md:px-12 flex items-center justify-between shadow-sm sticky top-0 z-[900]">
         <div className="flex items-center gap-3">
           <Image
-            src="/icons/logo.png" // Ensure this path is correct in your public folder
+            src="/icons/logo.png"
             alt="Dosth AI Logo"
             width={40}
             height={40}

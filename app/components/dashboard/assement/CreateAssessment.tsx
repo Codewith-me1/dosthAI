@@ -99,7 +99,7 @@ const CardImagesPopup: React.FC<{
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-      <div className="relative w-full max-w-5xl mx-auto bg-transparent flex flex-col items-center">
+      <div className="relative w-full max-w-8xl mx-auto bg-transparent flex flex-col items-center">
         {/* Header */}
         <div className="w-full flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
@@ -124,7 +124,7 @@ const CardImagesPopup: React.FC<{
         </div>
 
         {/* Slide Controls & Cards */}
-        <div className="flex items-center justify-center w-full gap-2 sm:gap-6 mb-6">
+        <div className="flex items-center justify-center mx-auto w-full gap-2 sm:gap-6 mb-6">
           <button
             onClick={goLeft}
             className="p-2 text-white hover:bg-white/10 rounded-full disabled:opacity-50"
@@ -133,14 +133,14 @@ const CardImagesPopup: React.FC<{
           >
             <ChevronLeft size={32} />
           </button>
-          <div className="flex gap-2 sm:gap-4 w-full max-w-sm sm:max-w-md md:max-w-2xl lg:max-w-4xl justify-center flex-wrap min-h-[16rem] items-center">
+          <div className="flex gap-2 sm:gap-4 w-full max-w-sm sm:max-w-md md:max-8xl lg:max-w-8xl justify-center flex-wrap min-h-[16rem] items-center">
             {currentImagesToDisplay.length > 0 ? (
               currentImagesToDisplay.map((img, idx) => (
                 <img
                   key={idx}
                   src={img}
                   alt={`Slide ${current + 1} - Image ${idx + 1}`}
-                  className="w-[8rem] h-[12rem] sm:w-[10rem] sm:h-[15rem] object-cover rounded-2xl border-4 border-yellow-400 shadow-md"
+                  className="lg:w-[20rem] lg:h-[15rem] sm:w-[8rem] sm:h-[15rem] object-cover rounded-2xl border-4 border-yellow-400 shadow-md"
                 />
               ))
             ) : (
